@@ -1,0 +1,100 @@
+---
+import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
+// import { FileUploader } from '../components/FileUploader.js';
+// import { FileProcessor } from '../components/FileProcessor.js';
+// import { FileDownloader } from '../components/FileDownloader.js';
+---
+
+<ShoelaceLayout title='File Processing'>
+  <div class='container' id='container'>
+    <h1 class='title'>File Processing Demo</h1>
+
+    <div id='uploader-container'></div>
+    <div id='processor-container'></div>
+    <div id='downloader-container'></div>
+  </div>
+
+  <script>
+    import '../components/FileUploader.js';
+    import '../components/FileProcessor.js';
+    import '../components/FileDownloader.js';
+
+    function createCustomElement(name, containerId) {
+      const container = document.getElementById(containerId);
+      const element = document.createElement(name);
+      element.id = containerId.replace('-container', '');
+      container.appendChild(element);
+      return element;
+    }
+
+    document
+      .getElementById('container')
+      .addEventListener('file-uploaded', (e) => {
+        console.log('Container caught file-uploaded event', e.detail);
+      });
+
+    // Wait for the custom elements to be defined
+    Promise.all([
+      customElements.whenDefined('file-uploader'),
+      customElements.whenDefined('file-processor'),
+      customElements.whenDefined('file-downloader'),
+    ]).then(() => {
+      const uploader = createCustomElement(
+        'file-uploader',
+        'uploader-container'
+      );
+      const processor = createCustomElement(
+        'file-processor',
+        'processor-container'
+      );
+      const downloader = createCustomElement(
+        'file-downloader',
+        'downloader-container'
+      );
+
+      console.log('Setting up event listeners');
+
+      uploader.addEventListener('file-uploaded', (e) => {
+        console.log('fp File processing started.', e.detail);
+        if (processor instanceof HTMLElement) {
+          (processor as any).jsonData = (e as any).detail.jsonData;
+        }
+      });
+
+      processor.addEventListener('data-processed', (e) => {
+        console.log('fp File processing done.', e.detail);
+        if (downloader instanceof HTMLElement) {
+          (downloader as any).processedData = (e as any).detail.processedData;
+        }
+      });
+
+      console.log('Event listeners set up completed');
+    });
+  </script>
+
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column; /* Stack elements vertically */
+      justify-content: flex-start; /* Align items to the start of the container */
+      align-items: center; /* Center items horizontally */
+      border: 2px solid black;
+    }
+    .title {
+      padding-left: 20px; /* Add padding to move the <h1> to the right */
+    }
+    tree-diagram {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</ShoelaceLayout>
