@@ -1,10 +1,25 @@
 {
-  "name": "@gongfuio/‹new-astro-repo›",
-  "description": "Starter project with Astro, Shoelace and Lit",
-  "author": "Gōng-fu I/O (https://github.com/gongfuio)",
-  "license": "Apache-2.0",
+  "name": "@rudifa/ad-astro-d3-demos",
+  "description": "Working with Astro, Shoelace and Lit",
+  "author": "@rudifa (https://github.com/rudifa)",
+  "license": "MIT",
   "type": "module",
   "version": "1.0.0",
+  "private": false,
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "keywords": [
+    "astro",
+    "d3",
+    "lit",
+    "shoelace"
+  ],
+  "main": "src/index.js",
+  "browser": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "format": "prettier \"src/**/*.{astro,js,html,css}\" --write",
     "lint": "eslint src --ext .js,.astro",
@@ -36,12 +51,12 @@
   "publishConfig": {
     "access": "restricted"
   },
-  "homepage": "https://github.com/gongfuio/‹new-astro-repo›#readme",
+  "homepage": "https://github.com/rudifa/ad-astro-d3-demos#readme",
   "bugs": {
-    "url": "https://github.com/gongfuio/‹new-astro-repo›/issues"
+    "url": "https://github.com/rudifa/ad-astro-d3-demos/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh@github.com:gongfuio/‹new-astro-repo›.git"
+    "url": "git+ssh@github.com:rudifa/ad-astro-d3-demos.git"
   }
 }
