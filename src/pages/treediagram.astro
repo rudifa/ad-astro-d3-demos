@@ -1,0 +1,37 @@
+---
+import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
+import { TreeDiagram } from '../components/TreeDiagram.js';
+---
+
+<ShoelaceLayout title='‹new-astro-repo› › WebApp'>
+  <div class='container'>
+    <h1 class='title'>Hello d3.js!</h1>
+    <TreeDiagram client:load />
+  </div>
+
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column; /* Stack elements vertically */
+      justify-content: flex-start; /* Align items to the start of the container */
+      align-items: center; /* Center items horizontally */
+      border: 2px solid black;
+    }
+    .title {
+      padding-left: 20px; /* Add padding to move the <h1> to the right */
+    }
+    tree-diagram {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</ShoelaceLayout>

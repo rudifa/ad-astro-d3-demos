@@ -22,6 +22,10 @@
       }
     }
   ],
+  "globals": {
+    "customElements": "readonly",
+    "console": "readonly"
+  },
   "ignorePatterns": [
     ".vercel"
   ]

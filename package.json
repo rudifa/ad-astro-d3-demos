@@ -1,10 +1,25 @@
 {
-  "name": "@gongfuio/‹new-astro-repo›",
-  "description": "Starter project with Astro, Shoelace and Lit",
-  "author": "Gōng-fu I/O (https://github.com/gongfuio)",
-  "license": "Apache-2.0",
+  "name": "@rudifa/ad-astro-d3-demos",
+  "description": "Working with Astro, Shoelace and Lit",
+  "author": "@rudifa (https://github.com/rudifa)",
+  "license": "MIT",
   "type": "module",
   "version": "1.0.0",
+  "private": false,
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "keywords": [
+    "astro",
+    "d3",
+    "lit",
+    "shoelace"
+  ],
+  "main": "src/index.js",
+  "browser": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "format": "prettier \"src/**/*.{astro,js,html,css}\" --write",
     "lint": "eslint src --ext .js,.astro",
@@ -16,14 +31,16 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@astrojs/lit": "^4.3.0",
     "@astrojs/vercel": "^7.8.2",
     "@shoelace-style/shoelace": "^2.17.1",
     "astro": "^4.16.6",
+    "d3": "^7.9.0",
     "lit": "^3.2.1"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^8.10.0",
-    "eslint": "^9.13.0",
+    "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-astro": "^1.3.0",
     "husky": "^9.1.6",
@@ -34,12 +51,12 @@
   "publishConfig": {
     "access": "restricted"
   },
-  "homepage": "https://github.com/gongfuio/‹new-astro-repo›#readme",
+  "homepage": "https://github.com/rudifa/ad-astro-d3-demos#readme",
   "bugs": {
-    "url": "https://github.com/gongfuio/‹new-astro-repo›/issues"
+    "url": "https://github.com/rudifa/ad-astro-d3-demos/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh@github.com:gongfuio/‹new-astro-repo›.git"
+    "url": "git+ssh@github.com:rudifa/ad-astro-d3-demos.git"
   }
 }

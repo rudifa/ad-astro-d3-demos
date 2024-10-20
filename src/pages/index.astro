@@ -1,26 +1,54 @@
 ---
 import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
 import CardGrid from '../components/CardGrid.astro';
+import { MyElement } from '../components/MyElement.js';
 ---
-<ShoelaceLayout title="‹new-astro-repo›">
+
+<ShoelaceLayout title='‹new-astro-repo›'>
   <header>
-    <h1>‹new-astro-repo›</h1>
+    <h1>‹ad-astro-d3-demos›</h1>
   </header>
   <main>
     <CardGrid>
       <sl-card>
         <h2>Web App</h2>
         Minimal layout, with support for Shoelace components.
-        <sl-button slot="footer"
-          variant="primary" outline
-          href="./webapp">Demo</sl-button>
+        <sl-button slot='footer' variant='primary' outline href='./webapp'
+          >Demo</sl-button
+        >
+      </sl-card>
+    </CardGrid>
+    <CardGrid>
+      <sl-card>
+        <h2>My Component</h2>
+        A minimal interactive lit component.
+        <sl-button slot='footer' variant='primary' outline href='./mycomponent'
+          >Demo</sl-button
+        >
+      </sl-card>
+    </CardGrid>
+    <CardGrid>
+      <sl-card>
+        <h2>Tree Diagram</h2>
+        A d3.hierarchy tree diagrammer lit component.
+        <sl-button slot='footer' variant='primary' outline href='./treediagram'
+          >Demo</sl-button
+        >
+      </sl-card>
+    </CardGrid>
+    <CardGrid>
+      <sl-card>
+        <h2>Astro Docs Greeting</h2>
+        An @astro/lit demo text expected:
+        <MyElement client:only='lit' />
       </sl-card>
     </CardGrid>
   </main>
 </ShoelaceLayout>
 
 <style>
-  header, main {
+  header,
+  main {
     margin: auto;
     width: 1024px;
     padding: 1rem;
