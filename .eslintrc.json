@@ -9,12 +9,16 @@
   "overrides": [
     {
       // Define the configuration for `.astro` file
-      "files": ["*.astro"],
+      "files": [
+        "*.astro"
+      ],
       // Allows Astro components to be parsed
       "parser": "astro-eslint-parser",
       "parserOptions": {
         "parser": "@typescript-eslint/parser",
-        "extraFileExtensions": [".astro"]
+        "extraFileExtensions": [
+          ".astro"
+        ]
       },
       "rules": {
         // override/add rules settings here, such as:
@@ -24,7 +28,11 @@
   ],
   "globals": {
     "customElements": "readonly",
-    "console": "readonly"
+    "console": "readonly",
+    "alert": "readonly",
+    "FileReader": "readonly",
+    "CustomEvent": "readonly",
+    "document": "readonly"
   },
   "ignorePatterns": [
     ".vercel"
