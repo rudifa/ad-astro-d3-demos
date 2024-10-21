@@ -33,9 +33,9 @@ export class FileDownloader extends LitElement {
 
   render() {
     return html`
-      <button @click=${this.downloadFile} ?disabled=${!this.processedData}>
+      <sl-button @click=${this.downloadFile} ?disabled=${!this.processedData}>
         Download Processed Data
-      </button>
+      </sl-button>
     `;
   }
 }

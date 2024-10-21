@@ -16,14 +16,13 @@ export class FileUploader extends LitElement {
   `;
 
   static properties = {
-    fileContent: { type: String },
     isLoading: { type: Boolean },
   };
 
   constructor() {
     super();
-    this.fileContent = "";
-    console.log("FileUploader: Constructor called");
+    this.isLoading = false;
+    console.log("FileProcessor: Constructor called");
   }
 
   handleFileUpload(event) {
@@ -33,12 +32,12 @@ export class FileUploader extends LitElement {
       return;
     }
 
-    const reader = new FileReader();
     this.isLoading = true;
+
+    const reader = new FileReader();
     reader.onload = (e) => {
       try {
         const jsonData = JSON.parse(e.target.result);
-        this.fileContent = JSON.stringify(jsonData, null, 2);
         this.isLoading = false;
 
         // Dispatch an event with the parsed JSON data
@@ -49,8 +48,8 @@ export class FileUploader extends LitElement {
             bubbles: true,
             composed: true,
           }),
-          console.log("File uploaded successfully."),
         );
+        console.log("File uploaded successfully.");
       } catch (error) {
         console.error("Error parsing JSON file:", error);
         alert("Error parsing JSON file.");
@@ -62,12 +61,9 @@ export class FileUploader extends LitElement {
 
   render() {
     return html`
-      <input type="file" @change=${this.handleFileUpload} />
-      ${this.isLoading
-        ? html`<p>Loading...</p>`
-        : html`<div class="file-content">
-            ${this.fileContent || "No file uploaded yet"}
-          </div>`}
+      <sl-label for="file-input">Upload a JSON file:</sl-label>
+      <input id="file-input" type="file" @change=${this.handleFileUpload} />
+      ${this.isLoading ? html`<sl-spinner></sl-spinner>` : ""}
     `;
   }
 }

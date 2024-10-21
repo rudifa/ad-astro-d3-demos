@@ -1,17 +1,21 @@
 ---
 import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
-// import { FileUploader } from '../components/FileUploader.js';
-// import { FileProcessor } from '../components/FileProcessor.js';
-// import { FileDownloader } from '../components/FileDownloader.js';
 ---
 
 <ShoelaceLayout title='File Processing'>
   <div class='container' id='container'>
     <h1 class='title'>File Processing Demo</h1>
 
-    <div id='uploader-container'></div>
-    <div id='processor-container'></div>
-    <div id='downloader-container'></div>
+    <div class='components-row'>
+      <div id='uploader-container' class='component'></div>
+      <div id='processor-container' class='component'></div>
+      <div id='downloader-container' class='component'></div>
+    </div>
+
+    <div class='content-row'>
+      <div class='content' id='input-content'></div>
+      <div class='content' id='output-content'></div>
+    </div>
   </div>
 
   <script>
@@ -19,6 +23,7 @@ import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
     import '../components/FileProcessor.js';
     import '../components/FileDownloader.js';
 
+    // Function to create and append custom elements to their respective containers
     function createCustomElement(name, containerId) {
       const container = document.getElementById(containerId);
       const element = document.createElement(name);
@@ -27,18 +32,20 @@ import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
       return element;
     }
 
+    // Add an event listener to the container to catch the 'file-uploaded' event
     document
       .getElementById('container')
       .addEventListener('file-uploaded', (e) => {
         console.log('Container caught file-uploaded event', e.detail);
       });
 
-    // Wait for the custom elements to be defined
+    // Wait for the custom elements to be defined before creating them
     Promise.all([
       customElements.whenDefined('file-uploader'),
       customElements.whenDefined('file-processor'),
       customElements.whenDefined('file-downloader'),
     ]).then(() => {
+      // Create and append the custom elements to their respective containers
       const uploader = createCustomElement(
         'file-uploader',
         'uploader-container'
@@ -54,17 +61,31 @@ import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
 
       console.log('Setting up event listeners');
 
+      // Add an event listener to the uploader for the 'file-uploaded' event
       uploader.addEventListener('file-uploaded', (e) => {
-        console.log('fp File processing started.', e.detail);
+        console.log('fp Ready for file processing.', e.detail);
         if (processor instanceof HTMLElement) {
-          (processor as any).jsonData = (e as any).detail.jsonData;
+          processor.jsonData = e.detail.jsonData; // Set the jsonData in the processor
+          processor.processedData = null; // Set processedData to null
+          document.getElementById('input-content').textContent = JSON.stringify(
+            e.detail.jsonData,
+            null,
+            2
+          ); // Display the input JSON data
+          document.getElementById('output-content').textContent = ''; // Clear output-content
+          if (downloader instanceof HTMLElement) {
+            downloader.processedData = null; // Send null to the downloader
+          }
         }
       });
 
+      // Add an event listener to the processor for the 'data-processed' event
       processor.addEventListener('data-processed', (e) => {
         console.log('fp File processing done.', e.detail);
         if (downloader instanceof HTMLElement) {
-          (downloader as any).processedData = (e as any).detail.processedData;
+          downloader.processedData = e.detail.processedData; // Set the processedData in the downloader
+          document.getElementById('output-content').textContent =
+            JSON.stringify(e.detail.processedData, null, 2); // Display the processed JSON data
         }
       });
 
@@ -92,9 +113,32 @@ import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
     .title {
       padding-left: 20px; /* Add padding to move the <h1> to the right */
     }
-    tree-diagram {
+    .components-row {
+      display: flex;
       width: 100%;
-      height: 100%;
+      padding: 10px;
+      justify-content: space-around; /* Distribute space evenly between components */
+    }
+    .component {
+      flex: 1; /* Each component takes equal space */
+      margin: 10px;
+      padding: 10px;
+      border: 2px solid blue; /* Add blue border to each component container */
+      background-color: #f9f9f9;
+    }
+    .content-row {
+      display: flex;
+      width: 100%;
+      padding: 10px;
+      justify-content: space-around; /* Distribute space evenly between content areas */
+    }
+    .content {
+      flex: 1; /* Each content area takes equal space */
+      margin: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      white-space: pre-wrap; /* Preserve whitespace and wrap text */
     }
   </style>
 </ShoelaceLayout>

@@ -31,18 +31,11 @@ export class FileProcessor extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    console.log("FileProcessor: Connected to the DOM");
-    this.addEventListener("file-uploaded", this.handleFileUploaded);
+    // console.log("FileProcessor: Connected to the DOM");
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.removeEventListener("file-uploaded", this.handleFileUploaded);
-  }
-
-  handleFileUploaded(event) {
-    console.log("FileProcessor: Received file-uploaded event", event.detail);
-    this.jsonData = event.detail.jsonData;
   }
 
   processData() {
@@ -85,9 +78,9 @@ export class FileProcessor extends LitElement {
 
   render() {
     return html`
-      <button @click=${this.processData} ?disabled=${!this.jsonData}>
+      <sl-button @click=${this.processData} ?disabled=${!this.jsonData}>
         Process Data
-      </button>
+      </sl-button>
     `;
   }
 }
