@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "lit";
+import { html, css, LitElement } from 'lit';
 
 export class FileUploader extends LitElement {
   static styles = css`
@@ -6,23 +6,30 @@ export class FileUploader extends LitElement {
       display: block;
       padding: 16px;
     }
-    .file-content {
-      white-space: pre-wrap;
-      background: #f4f4f4;
-      padding: 16px;
-      border: 1px solid #ddd;
-      margin-top: 16px;
+    input[type="file"] {
+      display: none; /* Hide the default file input */
+    }
+    .custom-file-input {
+      display: inline-block;
+      padding: 8px 16px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      text-align: center;
     }
   `;
 
   static properties = {
     isLoading: { type: Boolean },
+    selectedFileName: { type: String }, // Add selectedFileName property
   };
 
   constructor() {
     super();
     this.isLoading = false;
-    console.log("FileProcessor: Constructor called");
+    this.selectedFileName = ""; // Initialize selectedFileName
   }
 
   handleFileUpload(event) {
@@ -32,6 +39,7 @@ export class FileUploader extends LitElement {
       return;
     }
 
+    this.selectedFileName = file.name; // Set the selected file name
     this.isLoading = true;
 
     const reader = new FileReader();
@@ -61,11 +69,16 @@ export class FileUploader extends LitElement {
 
   render() {
     return html`
-      <sl-label for="file-input">Upload a JSON file:</sl-label>
-      <input id="file-input" type="file" @change=${this.handleFileUpload} />
+      <label class="custom-file-input">
+        Choose file to upload
+        <input id="file-input" type="file" @change=${this.handleFileUpload} />
+      </label>
       ${this.isLoading ? html`<sl-spinner></sl-spinner>` : ""}
+      ${this.selectedFileName
+        ? html`<p>File: ${this.selectedFileName}</p>`
+        : ""}
     `;
   }
 }
 
-customElements.define("file-uploader", FileUploader);
+customElements.define('file-uploader', FileUploader);
