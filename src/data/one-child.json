@@ -1,0 +1,14 @@
+{
+  "persons": [
+    {
+      "name": "Alice Johnson",
+      "father": "Tom Johnson",
+      "mother": "Mary Williams"
+    },
+    {
+      "name": "Bob Johnson",
+      "father": "Tom Johnson",
+      "mother": "Mary Williams"
+    }
+  ]
+}

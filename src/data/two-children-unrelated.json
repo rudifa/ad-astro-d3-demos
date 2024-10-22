@@ -1,0 +1,14 @@
+{
+  "persons": [
+    {
+      "name": "Dragica Dragić",
+      "father": "Dragan Dragić",
+      "mother": "Dragana Dragić"
+    },
+    {
+      "name": "Marica Marić",
+      "father": "Marko Marić",
+      "mother": "Mara Marić"
+    }
+  ]
+}
