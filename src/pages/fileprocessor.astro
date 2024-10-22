@@ -71,7 +71,9 @@ import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
             e.detail.jsonData,
             null,
             2
-          ); // Display the input JSON data
+          );
+
+          // Display the input JSON data
           document.getElementById('output-content').textContent = ''; // Clear output-content
           if (downloader instanceof HTMLElement) {
             downloader.processedData = null; // Send null to the downloader

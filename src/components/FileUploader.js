@@ -49,7 +49,7 @@ export class FileUploader extends LitElement {
         this.isLoading = false;
 
         // Dispatch an event with the parsed JSON data
-        console.log("FileUploader: Dispatching file-uploaded event", jsonData);
+        console.log("FileUploader: received file, dispatch file-uploaded event", jsonData);
         this.dispatchEvent(
           new CustomEvent("file-uploaded", {
             detail: { jsonData },
@@ -57,7 +57,6 @@ export class FileUploader extends LitElement {
             composed: true,
           }),
         );
-        console.log("File uploaded successfully.");
       } catch (error) {
         console.error("Error parsing JSON file:", error);
         alert("Error parsing JSON file.");
