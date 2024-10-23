@@ -1,6 +1,8 @@
 import { LitElement, html, css } from "lit";
-import * as procFuncs from "./ProcFuncs.js"; // array of fncs exported from ProcFuncs.js
-
+import * as procFuncs2 from "./ProcFuncs.js"; // array of funcs exported from ProcFuncs.js
+import * as procFuncs1 from "../util/json-to-d3-hierarchy.js"; // array of funcs exported from json-to-d3-hierarchy.js
+// const procFuncs is a merge of procFuncs1 + procFuncs2
+const procFuncs = { ...procFuncs1, ...procFuncs2 };
 
 export class FileProcessor extends LitElement {
   static properties = {
