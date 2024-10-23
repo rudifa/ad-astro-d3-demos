@@ -81,10 +81,18 @@ import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
             2
           );
 
-          // Display the input JSON data
-          document.getElementById('output-content').textContent = ''; // Clear output-content
+          // Clear output-content
+          document.getElementById('output-content').textContent = '';
+
+          // Clear the Downloader's processedData
           if (downloader instanceof HTMLElement) {
             downloader.processedData = null; // Send null to the downloader
+          }
+
+          // Clear the TreeDiagram's data
+          if (treeDiagram instanceof customElements.get('tree-diagram')) {
+            treeDiagram.data = null;
+            treeDiagram.requestUpdate();
           }
         }
       });

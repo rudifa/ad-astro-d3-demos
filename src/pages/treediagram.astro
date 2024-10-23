@@ -20,9 +20,56 @@ const sampleData = {
 <ShoelaceLayout title='Tree Diagram'>
   <div class='container'>
     <h1 class='title'>Tree Diagram</h1>
+    <button id='toggleCase'>Toggle Case</button>
     <TreeDiagram client:load data-json={JSON.stringify(sampleData)} />
   </div>
 </ShoelaceLayout>
+
+<script>
+  let isUppercase = false;
+  const toggleButton = document.getElementById('toggleCase');
+  const treeDiagram = document.querySelector('tree-diagram') as HTMLElement & {
+    data: any;
+  };
+
+  const originalData = JSON.parse(
+    treeDiagram?.getAttribute('data-json') || '{}'
+  );
+
+  function updateTreeDiagram() {
+    if (!treeDiagram) return;
+    const transformedData = transformData(originalData, isUppercase);
+    treeDiagram.setAttribute('data-json', JSON.stringify(transformedData));
+    treeDiagram.data = transformedData;
+  }
+
+  toggleButton?.addEventListener('click', () => {
+    isUppercase = !isUppercase;
+    updateTreeDiagram();
+  });
+
+  // Using type annotations to make it clear this function is used
+  function transformData(data: any, isUppercase: boolean): any {
+    if (typeof data !== 'object') return data;
+
+    // console.log('treediagram.transformData data:', data);
+
+    const result = Array.isArray(data) ? [] : {};
+    for (const key in data) {
+      if (key === 'name') {
+        result[key] = isUppercase
+          ? data[key].toUpperCase()
+          : data[key].toLowerCase();
+      } else {
+        result[key] = transformData(data[key], isUppercase);
+      }
+    }
+    return result;
+  }
+
+  // Ensure the initial render happens
+  updateTreeDiagram();
+</script>
 
 <style>
   body,
