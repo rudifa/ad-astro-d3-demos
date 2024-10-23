@@ -20,14 +20,23 @@ const sampleData = {
 <ShoelaceLayout title='Tree Diagram'>
   <div class='container'>
     <h1 class='title'>Tree Diagram</h1>
-    <button id='toggleCase'>Toggle Case</button>
+    <button id='toggleState'>Current State: Unchanged</button>
     <TreeDiagram client:load data-json={JSON.stringify(sampleData)} />
   </div>
 </ShoelaceLayout>
 
 <script>
-  let isUppercase = false;
-  const toggleButton = document.getElementById('toggleCase');
+  const TreeState = {
+    Null: 0,
+    Unchanged: 1,
+    Lowercase: 2,
+    Uppercase: 3,
+  } as const;
+
+  type TreeStateType = (typeof TreeState)[keyof typeof TreeState];
+  let currentState: TreeStateType = TreeState.Unchanged;
+
+  const toggleButton = document.getElementById('toggleState');
   const treeDiagram = document.querySelector('tree-diagram') as HTMLElement & {
     data: any;
   };
@@ -38,22 +47,39 @@ const sampleData = {
 
   function updateTreeDiagram() {
     if (!treeDiagram) return;
-    const transformedData = transformData(originalData, isUppercase);
+    let transformedData;
+    switch (currentState) {
+      case TreeState.Null:
+        transformedData = null;
+        break;
+      case TreeState.Unchanged:
+        transformedData = originalData;
+        break;
+      case TreeState.Lowercase:
+        transformedData = transformData(originalData, false);
+        break;
+      case TreeState.Uppercase:
+        transformedData = transformData(originalData, true);
+        break;
+    }
     treeDiagram.setAttribute('data-json', JSON.stringify(transformedData));
     treeDiagram.data = transformedData;
   }
 
+  function updateButtonText() {
+    if (!toggleButton) return;
+    const stateNames = Object.keys(TreeState);
+    toggleButton.textContent = `Current State: ${stateNames[currentState]}`;
+  }
+
   toggleButton?.addEventListener('click', () => {
-    isUppercase = !isUppercase;
+    currentState = ((currentState + 1) % 4) as TreeStateType;
+    updateButtonText();
     updateTreeDiagram();
   });
 
-  // Using type annotations to make it clear this function is used
   function transformData(data: any, isUppercase: boolean): any {
     if (typeof data !== 'object') return data;
-
-    // console.log('treediagram.transformData data:', data);
-
     const result = Array.isArray(data) ? [] : {};
     for (const key in data) {
       if (key === 'name') {
@@ -68,6 +94,7 @@ const sampleData = {
   }
 
   // Ensure the initial render happens
+  updateButtonText();
   updateTreeDiagram();
 </script>
 
