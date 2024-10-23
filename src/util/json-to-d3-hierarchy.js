@@ -1,4 +1,9 @@
-
+ /**
+ * Converts a flat JSON structure of persons with parent relationships into a D3 hierarchy structure.
+ * @param {Object} data - The input data containing an array of persons with their parent relationships
+ * @param {Array} data.persons - Array of person objects with name, father, and mother properties
+ * @returns {Object} A hierarchical tree structure with a root "Ancestors" node and nested children
+ */
 export function convertToHierarchy(data) {
   // Create a map to store all nodes by name
   const nodesMap = new Map();
