@@ -33,20 +33,26 @@ export class TreeDiagram extends LitElement {
     }
   `;
 
+  static properties = {
+    data: { type: Object },
+  };
+
+  constructor() {
+    super();
+    this.data = null;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    const jsonString = this.getAttribute("data-json");
+    if (jsonString) {
+      this.data = JSON.parse(jsonString);
+    }
+  }
+
   firstUpdated() {
-    const data = {
-      name: "Root",
-      children: [
-        {
-          name: "Child 1",
-          children: [{ name: "Grandchild 1" }, { name: "Grandchild 2" }],
-        },
-        {
-          name: "Child 2",
-          children: [{ name: "Grandchild 3" }],
-        },
-      ],
-    };
+    console.log("TreeDiagram: firstUpdated data", this.data);
+    if (!this.data) return;
 
     const width = this.clientWidth;
     const height = this.clientHeight;
@@ -59,7 +65,7 @@ export class TreeDiagram extends LitElement {
       .append("g")
       .attr("transform", `translate(${horiz_padding},0)`); // Use horizontal padding for translation
 
-    const root = d3.hierarchy(data);
+    const root = d3.hierarchy(this.data);
     const treeLayout = d3.tree().size([height, width - 2 * horiz_padding]); // Use horizontal padding to limit the width
 
     treeLayout(root);
