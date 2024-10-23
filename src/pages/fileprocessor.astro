@@ -12,6 +12,8 @@ import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
       <div id='downloader-container' class='component'></div>
     </div>
 
+    <div id='tree-diagram-container' class='component'></div>
+
     <div class='content-row'>
       <div class='content' id='input-content'></div>
       <div class='content' id='output-content'></div>
@@ -22,6 +24,7 @@ import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
     import '../components/FileUploader.js';
     import '../components/FileProcessor.js';
     import '../components/FileDownloader.js';
+    import '../components/TreeDiagram.js';
 
     // Function to create and append custom elements to their respective containers
     function createCustomElement(name, containerId) {
@@ -44,6 +47,7 @@ import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
       customElements.whenDefined('file-uploader'),
       customElements.whenDefined('file-processor'),
       customElements.whenDefined('file-downloader'),
+      customElements.whenDefined('tree-diagram'),
     ]).then(() => {
       // Create and append the custom elements to their respective containers
       const uploader = createCustomElement(
@@ -57,6 +61,10 @@ import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
       const downloader = createCustomElement(
         'file-downloader',
         'downloader-container'
+      );
+      const treeDiagram = createCustomElement(
+        'tree-diagram',
+        'tree-diagram-container'
       );
 
       console.log('Setting up event listeners');
@@ -88,6 +96,11 @@ import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
           downloader.processedData = e.detail.processedData; // Set the processedData in the downloader
           document.getElementById('output-content').textContent =
             JSON.stringify(e.detail.processedData, null, 2); // Display the processed JSON data
+        }
+        // Update the TreeDiagram
+        if (treeDiagram instanceof HTMLElement && e.detail.processedData) {
+          treeDiagram.data = e.detail.processedData; // Set the data property directly
+          treeDiagram.requestUpdate(); // Request an update
         }
       });
 
@@ -141,6 +154,12 @@ import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
       border: 1px solid #ccc;
       background-color: #f9f9f9;
       white-space: pre-wrap; /* Preserve whitespace and wrap text */
+    }
+
+    #tree-diagram-container {
+      width: 100%;
+      height: 400px;
+      margin-top: 20px;
     }
   </style>
 </ShoelaceLayout>
