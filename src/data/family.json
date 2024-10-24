@@ -1,17 +1,17 @@
 {
   "persons": [
     {
-      "fullname": "John Doe",
+      "name": "John Doe",
       "father": "Robert Doe",
       "mother": "Jane Smith"
     },
     {
-      "fullname": "Jane Smith",
+      "name": "Jane Smith",
       "father": "Michael Smith",
       "mother": "Anna Johnson"
     },
     {
-      "fullname": "Robert Doe",
+      "name": "Robert Doe",
       "father": "William Doe",
       "mother": "Sarah Miller"
     }
