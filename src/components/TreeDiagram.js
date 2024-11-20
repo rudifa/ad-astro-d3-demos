@@ -1,6 +1,103 @@
 import * as d3 from "d3";
 import { html, css, LitElement } from "lit";
 
+function getCircularReplacer() {
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (key === "parent" && typeof value === "object" && value !== null) {
+      // Skip the 'parent' property to break the circular reference
+      return "[Circular Parent]";
+    }
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return "[Circular]";
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+}
+
+// usage:
+// const jsonString = JSON.stringify(obj, getCircularReplacer());
+// console.log(jsonString);
+
+// Define enhanced stringifyCircular as a free function
+
+function stringifyCircular(obj, maxDepth = 5, depth = 0, seen = new WeakSet()) {
+  const indent = "  ".repeat(depth);
+  const childIndent = "  ".repeat(depth + 1);
+
+  // Handle primitive types
+  if (obj === null) return "null";
+  if (typeof obj !== "object") return JSON.stringify(obj);
+
+  // Check for circular references and max depth separately
+  if (seen.has(obj)) {
+    return '"[Circular Reference]"';
+  }
+  if (depth >= maxDepth) {
+    return '"[Max Depth Reached]"';
+  }
+
+  seen.add(obj);
+
+  // Handle arrays
+  if (Array.isArray(obj)) {
+    const items = obj.map(
+      (item) =>
+        childIndent + stringifyCircular(item, maxDepth, depth + 1, seen),
+    );
+    if (items.length === 0) return "[]";
+    return `[\n${items.join(",\n")}\n${indent}]`;
+  }
+
+  // Handle d3.hierarchy Node
+  if (obj.constructor.name === "Node") {
+    const safe = {
+      // Core data
+      data: obj.data,
+      height: obj.height,
+      depth: obj.depth,
+
+      // Layout coordinates (if they exist)
+      ...(typeof obj.x !== "undefined" && { x: obj.x }),
+      ...(typeof obj.y !== "undefined" && { y: obj.y }),
+
+      // Children (for tree structure)
+      children: obj.children,
+    };
+
+    obj = safe;
+  }
+
+  // Handle regular objects
+  const entries = Object.entries(obj)
+    .filter(([, value]) => value !== undefined)
+    .map(([key, value]) => {
+      const stringValue = stringifyCircular(value, maxDepth, depth + 1, seen);
+      return `${childIndent}"${key}": ${stringValue}`;
+    });
+
+  if (entries.length === 0) return "{}";
+  return `{\n${entries.join(",\n")}\n${indent}}`;
+}
+
+// Debug helper with optional title and collapsed groups
+// function debugHierarchy(root, message = "Hierarchy Debug", collapsed = false) {
+//   if (collapsed) {
+//     console.groupCollapsed(message);
+//   } else {
+//     console.group(message);
+//   }
+//   console.log(stringifyCircular(root, 3));
+//   console.groupEnd();
+// }
+
+// Example usage:
+// debugHierarchy(root, "Initial hierarchy");
+// debugHierarchy(root, "After layout", true);  // collapsed group
+
 export class TreeDiagram extends LitElement {
   static styles = css`
     :host {
@@ -90,6 +187,17 @@ export class TreeDiagram extends LitElement {
 
     const root = d3.hierarchy(this.data);
     const treeLayout = d3.tree().size([height, width - 2 * horiz_padding]);
+
+    console.log("Tree Diagram: root 1", stringifyCircular(root, 5));
+
+    console.log(
+      "Tree Diagram: root 2",
+      JSON.stringify(root, getCircularReplacer(), 2),
+    );
+    // console.log(
+    //   "Tree Diagram: treeLayout",
+    //   JSON.stringify(treeLayout, null, 2),
+    // );
 
     treeLayout(root);
 
