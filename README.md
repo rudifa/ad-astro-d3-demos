@@ -1,5 +1,70 @@
 # Astro + Lit Demo
 
+
+
+Directory `src/util` contains experiments in creating lit components that use d3 and
+demo files that write their render output to svg files.
+
+```
+├── src/util
+│   ├── src/util/.DS_Store
+│   ├── src/util/d3-hierarchy-to-svg.demo.js
+│   ├── src/util/json-to-d3-hierarchy.demo.js
+│   ├── src/util/json-to-d3-hierarchy.js
+│   ├── src/util/json-to-d3-hierarchy.test.js
+│   ├── src/util/lit-to-svg.demo.js
+│   ├── src/util/multiarchy-chatgpt.demo.js
+│   ├── src/util/multiarchy-chatgpt.js
+│   ├── src/util/multiarchy-chatgpt.test.js
+│   ├── src/util/multiarchyVisualizer.demo.js
+│   ├── src/util/multiarchyVisualizer.js
+│   ├── src/util/out.svg
+│   ├── src/util/output.svg
+│   ├── src/util/readJsonFile.js
+│   └── src/util/tree.svg
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Project origin
+
 This project demonstrates how to integrate Lit components with Astro, based on the Astro Starter Kit: Minimal template.
 
 ## 🚀 Project Structure
