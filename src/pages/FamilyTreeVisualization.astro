@@ -1,0 +1,85 @@
+---
+// Imports and page configuration
+import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
+import { FamilyTreeVisualization } from '../components/FamilyTreeVisualization.js';
+
+// console.log('FamilyTreeVisualization:', FamilyTreeVisualization);
+---
+
+<ShoelaceLayout title='D3-dag Family Tree Visualization'>
+  <div class='container mx-auto p-8'>
+    <h1 class='text-4xl font-bold mb-6'>
+      Family Tree Visualizations with D3-dag
+    </h1>
+
+    <section class='mb-12'>
+      <p>try 1st way</p>
+      <family-tree-viz width='800' height='600'></family-tree-viz>
+    </section>
+
+    <section class='mb-12'>
+      <h2 class='text-2xl font-semibold mb-4'>Default Family Tree</h2>
+      <p class='mb-4'>
+        This visualization uses the default family data built into the
+        component.
+      </p>
+      <p>try 2nd way</p>
+      <FamilyTreeVisualization
+        client:load
+        class='border-2 border-gray-200 shadow-lg'
+      />
+    </section>
+
+    <section class='mb-12'>
+      <h2 class='text-2xl font-semibold mb-4'>
+        Custom Multi-Generational Family
+      </h2>
+      <p class='mb-4'>
+        A more complex family tree showing multiple generations and multiple
+        parents.
+      </p>
+      <p>try 3rd way</p>
+      <family-tree-viz
+        family-data=`[
+          {"id":"Grandpa1","parentIds":[]},
+          {"id":"Grandma1","parentIds":[]},
+          {"id":"Grandpa2","parentIds":[]},
+          {"id":"Grandma2","parentIds":[]},
+          {"id":"Parent1","parentIds":["Grandpa1","Grandma1"]},
+          {"id":"Parent2","parentIds":["Grandpa2","Grandma2"]},
+          {"id":"Parent3","parentIds":["Grandpa1","Grandma1"]},
+          {"id":"Child1","parentIds":["Parent1","Parent2"]},
+          {"id":"Child2","parentIds":["Parent1","Parent2"]},
+          {"id":"Child3","parentIds":["Parent3"]}
+        ]`
+        class='border-2 border-blue-200 shadow-lg'></family-tree-viz>
+    </section>
+
+    <section>
+      <h2 class='text-2xl font-semibold mb-4'>Implementation Details</h2>
+      <div class='bg-gray-100 p-6 rounded-lg'>
+        <h3 class='text-xl font-medium mb-2'>Key Features</h3>
+        <ul class='list-disc list-inside space-y-2'>
+          <li>Uses Lit element for custom web component</li>
+          <li>Integrates d3-dag for complex hierarchical layouts</li>
+          <li>Supports dynamic data injection via attribute</li>
+          <li>Renders DAG with multiple parent relationships</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <script type='module'>
+    // import '../components/FamilyTreeVisualization.js';
+  </script>
+</ShoelaceLayout>
+
+<style>
+  family-tree-viz {
+    display: block;
+    width: 100%;
+    max-width: 800px;
+    height: 400px;
+    margin: 0 auto;
+  }
+</style>
