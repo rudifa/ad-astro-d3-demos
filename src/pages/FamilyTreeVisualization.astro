@@ -48,14 +48,18 @@ const familyData2 = [
         This visualization uses the family tree data built into the page.
       </p>
 
-      <sl-select label='Select Family Data' id='familyDataSelect'>
-        <sl-option value='familyData1'>Family Data 1</sl-option>
+      <sl-select
+        label='Select Family Data'
+        id='familyDataSelect'
+        class='custom-select'
+      >
+        <sl-option value='familyData1' selected>Family Data 1</sl-option>
         <sl-option value='familyData2'>Family Data 2</sl-option>
       </sl-select>
 
       <FamilyTreeVisualization
         client:load
-        family-data={JSON.stringify(familyData2)}
+        family-data={JSON.stringify(familyData1)}
         class='family-tree-viz border-2 border-gray-300 rounded-lg shadow-md p-4'
         id='family-tree-svg'
       />
@@ -68,6 +72,9 @@ const familyData2 = [
     const select = document.getElementById('familyDataSelect');
     const familyTreeViz = document.getElementById('family-tree-svg');
 
+    // Set initial value
+    select.value = 'familyData1';
+
     select.addEventListener('sl-change', (event) => {
       const selectedData =
         event.target.value === 'familyData1' ? familyData1 : familyData2;
@@ -79,10 +86,38 @@ const familyData2 = [
 <style>
   .family-tree-viz {
     border: 2px solid #e5e7eb;
-    border-radius: 0.5rem;
+    border-radius: 1.5rem;
     box-shadow:
       0 4px 6px -1px rgba(0, 0, 0, 0.1),
       0 2px 4px -1px rgba(0, 0, 0, 0.06);
     padding: 1rem;
+  }
+
+  .container {
+    margin-left: 2rem;
+    background-color: #f7fafc;
+    min-height: 100vh; /* This ensures the container takes at least the full viewport height */
+    padding-bottom: 2rem; /* Add some padding at the bottom for better appearance */
+  }
+
+  .custom-select::part(form-control) {
+    width: 150px;
+    margin-bottom: 1rem;
+    margin-left: 2rem;
+  }
+
+  .custom-select::part(base) {
+    border-color: #4a5568;
+    border-radius: 0.375rem;
+    background-color: #f7fafc;
+  }
+
+  .custom-select::part(control) {
+    background-color: #edf2f7;
+  }
+
+  .custom-select::part(label) {
+    color: #2d3748;
+    font-weight: bold;
   }
 </style>

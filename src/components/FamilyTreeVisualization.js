@@ -21,24 +21,12 @@ function createBezierPath(source, target) {
               C${source.x},${midY} ${target.x},${midY} ${target.x},${target.y}`;
 }
 
-
-
 export class FamilyTreeVisualization extends LitElement {
   static properties = {
     familyData: {
       type: Array,
       attribute: "family-data",
       reflect: true,
-      // converter: {
-      //   fromAttribute: (value) => {
-      //     try {
-      //       return JSON.parse(value);
-      //     } catch (error) {
-      //       console.error("Invalid family data JSON", error);
-      //       return [];
-      //     }
-      //   },
-      // },
     },
     width: { type: Number, attribute: true },
     height: { type: Number, attribute: true },
@@ -90,18 +78,23 @@ export class FamilyTreeVisualization extends LitElement {
 
   firstUpdated() {
     console.log("First updated");
-
-    this.renderFamilyTree();
   }
 
   updated(changedProperties) {
-    changedProperties.forEach((oldValue, propName) => {
-      console.log(`Property ${propName} changed. Old value: ${oldValue}`);
-    });
+    super.updated(changedProperties);
 
-    // Your existing logic here
-    if (changedProperties.has("familyData")) {
-      this.renderFamilyTree();
+    if (changedProperties.has("familyData") || changedProperties.has("orientation")) {
+      // Use requestAnimationFrame to ensure the DOM is ready
+      requestAnimationFrame(() => {
+        const placeholder = this.shadowRoot.getElementById('family-tree-placeholder');
+        if (placeholder) {
+          const svg = this.renderFamilyTree();
+          if (svg) {
+            placeholder.innerHTML = '';
+            placeholder.appendChild(svg.node());
+          }
+        }
+      });
     }
   }
 
@@ -119,6 +112,11 @@ export class FamilyTreeVisualization extends LitElement {
   }
 
   renderFamilyTree() {
+    if (typeof document === "undefined") {
+      // Return a placeholder when running on the server
+      return html`<div id="family-tree-placeholder"></div>`;
+    }
+
     try {
       console.log("Rendering family tree called");
       console.log("Family data:", this.familyData);
@@ -205,25 +203,25 @@ export class FamilyTreeVisualization extends LitElement {
       return null;
     }
   }
- renderBoxRect(g, width, height) {
-  const lines = [
-    { x1: 0, y1: 0, x2: width, y2: 0 },
-    { x1: 0, y1: 0, x2: 0, y2: height },
-    { x1: 0, y1: height, x2: width, y2: height },
-    { x1: width, y1: 0, x2: width, y2: height },
-  ];
+  renderBoxRect(g, width, height) {
+    const lines = [
+      { x1: 0, y1: 0, x2: width, y2: 0 },
+      { x1: 0, y1: 0, x2: 0, y2: height },
+      { x1: 0, y1: height, x2: width, y2: height },
+      { x1: width, y1: 0, x2: width, y2: height },
+    ];
 
-  g.selectAll("line")
-    .data(lines)
-    .enter()
-    .append("line")
-    .attr("x1", (d) => d.x1)
-    .attr("y1", (d) => d.y1)
-    .attr("x2", (d) => d.x2)
-    .attr("y2", (d) => d.y2)
-    .attr("stroke", "black")
-    .attr("stroke-width", 1);
-}
+    g.selectAll("line")
+      .data(lines)
+      .enter()
+      .append("line")
+      .attr("x1", (d) => d.x1)
+      .attr("y1", (d) => d.y1)
+      .attr("x2", (d) => d.x2)
+      .attr("y2", (d) => d.y2)
+      .attr("stroke", "black")
+      .attr("stroke-width", 1);
+  }
   adjustNodePositions(nodes, width, height) {
     switch (this.orientation) {
       case "bottom":
@@ -298,10 +296,17 @@ export class FamilyTreeVisualization extends LitElement {
   render() {
     return html`
       ${this.renderSelect()}
-      <div class="family-tree-container">${this.renderFamilyTree()}</div>
+      <div class="family-tree-container">
+        <div id="family-tree-placeholder"></div>
+      </div>
     `;
   }
 }
 
 // Define the custom element
-customElements.define("family-tree-viz", FamilyTreeVisualization);
+try {
+  customElements.define("family-tree-viz", FamilyTreeVisualization);
+} catch (error) {
+  // Element already defined, or other error occurred
+  console.warn("Couldn't define custom element:", error);
+}
