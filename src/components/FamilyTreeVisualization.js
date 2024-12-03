@@ -23,7 +23,7 @@ function createBezierPath(source, target) {
 
 const FIXED_NODE_SIZE = 150; // pixels
 const FIXED_CIRCLE_RADIUS = 40; // pixels
-const FIXED_FONT_SIZE = "16px"; // pixels
+const FIXED_FONT_SIZE = "12px"; // pixels
 
 export class FamilyTreeVisualization extends LitElement {
   static properties = {
@@ -32,11 +32,7 @@ export class FamilyTreeVisualization extends LitElement {
       attribute: "family-data",
       reflect: true,
     },
-    width: { type: Number, attribute: true },
-    height: { type: Number, attribute: true },
     orientation: { type: String },
-
-    testProp: { type: String },
   };
 
   static styles = css`
@@ -67,24 +63,32 @@ export class FamilyTreeVisualization extends LitElement {
 
   constructor() {
     super();
-    // Default data if none provided
-    this.familyData = [
-      { id: "Grandpa", parentIds: [] },
-      { id: "Grandma", parentIds: [] },
-      { id: "Parent1", parentIds: ["Grandpa", "Grandma"] },
-      { id: "Parent2", parentIds: ["Grandpa", "Grandma"] },
-      { id: "Child1", parentIds: ["Parent1"] },
-      { id: "Child2", parentIds: ["Parent2"] },
-    ];
-    this.width = 800;
-    this.height = 600;
+    this._familyData = this.getDefaultFamilyData();
     this.orientation = "top"; // Can be 'top', 'bottom', 'left', or 'right'
     this.testProp = "Initial value of testProp";
-    // console.log("Constructor called");
   }
 
-  firstUpdated() {
-    console.log("First updated");
+  get familyData() {
+    return this._familyData;
+  }
+
+  set familyData(value) {
+    if (Array.isArray(value) && value.length === 0) {
+      this._familyData = this.getDefaultFamilyData();
+    } else {
+      this._familyData = value;
+    }
+  }
+
+  getDefaultFamilyData() {
+    return [
+      { id: "Grandpa", parentIds: [], age: 70, occupation: "Retired" },
+      { id: "Grandma", parentIds: [] },
+      { id: "Parent1", parentIds: ["Grandpa", "Grandma"], age: 45, occupation: "Engineer" },
+      { id: "Parent2", parentIds: ["Grandpa", "Grandma"] },
+      { id: "Child1", parentIds: ["Parent1"], age: 20, occupation: "Student" },
+      { id: "Child2", parentIds: ["Parent2"] },
+    ];
   }
 
   updated(changedProperties) {
@@ -113,10 +117,9 @@ export class FamilyTreeVisualization extends LitElement {
   connectedCallback() {
     console.log("Connected callback");
     super.connectedCallback();
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
+    if (!this.familyData || this.familyData.length === 0) {
+      this.familyData = this.getDefaultFamilyData();
+    }
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -276,11 +279,35 @@ export class FamilyTreeVisualization extends LitElement {
 
     nodeGroup
       .append("text")
-      .text((d) => d.data.id)
-      .attr("dy", "0.32em")
       .attr("text-anchor", "middle")
       .attr("font-size", FIXED_FONT_SIZE)
-      .attr("fill", "white");
+      .attr("fill", "white")
+      .each(function(d) {
+        const text = d3.select(this);
+        text.append("tspan")
+          .attr("x", 0)
+          .attr("dy", "-0.2em")
+          .text(d.data.id);
+
+        if (d.data.age !== undefined || d.data.occupation !== undefined) {
+          let infoText = "(";
+          if (d.data.age !== undefined) {
+            infoText += d.data.age;
+          }
+          if (d.data.age !== undefined && d.data.occupation !== undefined) {
+            infoText += ", ";
+          }
+          if (d.data.occupation !== undefined) {
+            infoText += d.data.occupation;
+          }
+          infoText += ")";
+
+          text.append("tspan")
+            .attr("x", 0)
+            .attr("dy", "1.2em")
+            .text(infoText);
+        }
+      });
   }
 
   renderSelect() {

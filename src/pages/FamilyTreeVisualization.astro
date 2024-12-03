@@ -2,6 +2,8 @@
 import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
 import { FamilyTreeVisualization } from '../components/FamilyTreeVisualization.js';
 
+const familyData0 = [];
+
 const familyData1 = [
   { id: 'Grandpa1', parentIds: [] },
   { id: 'Grandma1', parentIds: [] },
@@ -53,6 +55,7 @@ const familyData2 = [
         id='familyDataSelect'
         class='custom-select'
       >
+        <sl-option value='familyData0'>Default Family Data</sl-option>
         <sl-option value='familyData1' selected>Family Data 1</sl-option>
         <sl-option value='familyData2'>Family Data 2</sl-option>
       </sl-select>
@@ -67,7 +70,7 @@ const familyData2 = [
   </div>
 </ShoelaceLayout>
 
-<script define:vars={{ familyData1, familyData2 }}>
+<script define:vars={{ familyData0, familyData1, familyData2 }}>
   document.addEventListener('DOMContentLoaded', () => {
     const select = document.getElementById('familyDataSelect');
     const familyTreeViz = document.getElementById('family-tree-svg');
@@ -76,8 +79,18 @@ const familyData2 = [
     select.value = 'familyData1';
 
     select.addEventListener('sl-change', (event) => {
-      const selectedData =
-        event.target.value === 'familyData1' ? familyData1 : familyData2;
+      const selectedData = (() => {
+        switch (event.target.value) {
+          case 'familyData0':
+            return familyData0;
+          case 'familyData1':
+            return familyData1;
+          case 'familyData2':
+            return familyData2;
+          default:
+            return familyData0;
+        }
+      })();
       familyTreeViz.setAttribute('family-data', JSON.stringify(selectedData));
     });
   });
@@ -85,7 +98,6 @@ const familyData2 = [
 
 <style>
   .family-tree-viz {
-    border: 2px solid #e5e7eb;
     border-radius: 1.5rem;
     box-shadow:
       0 4px 6px -1px rgba(0, 0, 0, 0.1),
