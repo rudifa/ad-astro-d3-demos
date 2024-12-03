@@ -21,24 +21,29 @@ function createBezierPath(source, target) {
               C${source.x},${midY} ${target.x},${midY} ${target.x},${target.y}`;
 }
 
+
+
 export class FamilyTreeVisualization extends LitElement {
   static properties = {
     familyData: {
       type: Array,
       attribute: "family-data",
-      converter: {
-        fromAttribute: (value) => {
-          try {
-            return JSON.parse(value);
-          } catch (error) {
-            console.error("Invalid family data JSON", error);
-            return [];
-          }
-        },
-      },
+      reflect: true,
+      // converter: {
+      //   fromAttribute: (value) => {
+      //     try {
+      //       return JSON.parse(value);
+      //     } catch (error) {
+      //       console.error("Invalid family data JSON", error);
+      //       return [];
+      //     }
+      //   },
+      // },
     },
     width: { type: Number, attribute: true },
     height: { type: Number, attribute: true },
+    orientation: { type: String },
+
     testProp: { type: String },
   };
 
@@ -55,6 +60,14 @@ export class FamilyTreeVisualization extends LitElement {
       max-width: 100%;
       max-height: 600px;
     }
+
+    sl-select {
+      display: block;
+      margin: 1rem;
+      width: 12rem;
+      background-color: #f0f8ff; /* Light blue background */
+      color: #333; /* Dark text color */
+    }
   `;
 
   constructor() {
@@ -70,6 +83,7 @@ export class FamilyTreeVisualization extends LitElement {
     ];
     this.width = 800;
     this.height = 600;
+    this.orientation = "top"; // Can be 'top', 'bottom', 'left', or 'right'
     this.testProp = "Initial value of testProp";
     console.log("Constructor called");
   }
@@ -81,45 +95,39 @@ export class FamilyTreeVisualization extends LitElement {
   }
 
   updated(changedProperties) {
-    console.log("Updated", changedProperties);
+    changedProperties.forEach((oldValue, propName) => {
+      console.log(`Property ${propName} changed. Old value: ${oldValue}`);
+    });
 
+    // Your existing logic here
     if (changedProperties.has("familyData")) {
-      // Clear previous SVG and re-render
-      const svgContainer = this.renderRoot.querySelector("#family-tree-svg");
-      if (svgContainer) {
-        svgContainer.innerHTML = "";
-        this.renderFamilyTree();
-      }
+      this.renderFamilyTree();
     }
   }
 
   connectedCallback() {
     console.log("Connected callback");
     super.connectedCallback();
-    this.updateComplete.then(() => {
-      console.log("Update complete");
-      this.renderFamilyTree();
-    });
-    this.resizeObserver = new ResizeObserver(() => this.renderFamilyTree());
-    this.resizeObserver.observe(this);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.resizeObserver.unobserve(this);
   }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    super.attributeChangedCallback(name, oldValue, newValue);
+  }
+
   renderFamilyTree() {
     try {
       console.log("Rendering family tree called");
       console.log("Family data:", this.familyData);
+      console.log("Orientation:", this.orientation);
 
       if (!this.familyData || this.familyData.length === 0) {
         console.warn("No family data to render");
-        return;
+        return null;
       }
-
-      const svgContainer = this.renderRoot.querySelector("#family-tree-svg");
-      svgContainer.innerHTML = ""; // Clear previous content
 
       // Create DAG from the data
       const dag = graphStratify()(this.familyData);
@@ -128,17 +136,11 @@ export class FamilyTreeVisualization extends LitElement {
 
       // Layout configuration
       const margin = { top: 40, right: 40, bottom: 40, left: 40 };
-
-      // Create SVG
-      const svg = d3
-        .select(svgContainer)
-        .append("svg")
-        .attr("width", "100%")
-        .attr("height", "100%");
+      const nodeSize = [80, 80];
 
       // Sugiyama layout (specialized for DAGs)
       const layout = sugiyama()
-        .nodeSize([120, 80])
+        .nodeSize(nodeSize)
         .layering(layeringLongestPath())
         .decross(decrossTwoLayer())
         .coord(coordCenter());
@@ -146,60 +148,157 @@ export class FamilyTreeVisualization extends LitElement {
       // Apply layout
       const { width, height } = layout(dag);
 
-      // Adjust SVG viewBox based on the layout result
-      svg.attr(
-        "viewBox",
-        `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`,
-      );
+      // Get reference to dag nodes
+      const nodes = dag.nodes();
+
+      // Adjust node positions based on orientation
+      this.adjustNodePositions(nodes, width, height);
+
+      // Recalculate width and height after adjusting positions
+      const xExtent = d3.extent(dag.nodes(), (node) => node.x);
+      const yExtent = d3.extent(dag.nodes(), (node) => node.y);
+
+      let newWidth = xExtent[1] - xExtent[0] + nodeSize[0];
+      let newHeight = yExtent[1] - yExtent[0] + nodeSize[1];
+
+      switch (this.orientation) {
+        case "left":
+        case "right":
+          [newWidth, newHeight] = [newHeight, newWidth];
+          break;
+        default:
+          break;
+      }
+
+      // Adjust SVG viewBox based on the new dimensions
+      const [viewBoxWidth, viewBoxHeight] = [
+        newWidth + margin.left + margin.right,
+        newHeight + margin.top + margin.bottom,
+      ];
+
+      // Create SVG element using d3
+      const svg = d3
+        .create("svg")
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .attr("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`);
 
       const g = svg
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
-      g.append("g")
-        .selectAll("path")
-        .data(dag.links())
-        .enter()
-        .append("path")
-        .attr("d", ({ source, target }) => createBezierPath(source, target))
-        .attr("fill", "none")
-        .attr("stroke", "#2196F3") // Change color
-        .attr("stroke-width", 2); // Increase width
+      console.log("SVG:", svg);
+      console.log("G:", g);
 
-      // Draw nodes
-      const nodes = g
-        .append("g")
-        .selectAll("g")
-        .data(dag.nodes())
-        .enter()
-        .append("g")
-        .attr("transform", (d) => `translate(${d.x}, ${d.y})`);
+      // Render box rect
+      this.renderBoxRect(g, viewBoxWidth, viewBoxHeight);
 
-      nodes.append("circle").attr("r", 20).attr("fill", "#69b3a2");
+      // Render links
+      this.renderLinks(g, dag);
 
-      nodes
-        .append("text")
-        .attr("dy", "0.32em")
-        .attr("text-anchor", "middle")
-        .text((d) => d.data.id)
-        .attr("font-size", "10px")
-        .attr("fill", "white");
+      // Render nodes
+      this.renderNodes(g, dag);
 
-      // Add this debugging code
-      console.log("Number of nodes:", dag.nodes().length);
-      console.log("Number of links:", dag.links().length);
-      console.log("SVG dimensions:", width, height);
+      return svg;
     } catch (error) {
       console.error("Error rendering family tree:", error);
+      return null;
+    }
+  }
+ renderBoxRect(g, width, height) {
+  const lines = [
+    { x1: 0, y1: 0, x2: width, y2: 0 },
+    { x1: 0, y1: 0, x2: 0, y2: height },
+    { x1: 0, y1: height, x2: width, y2: height },
+    { x1: width, y1: 0, x2: width, y2: height },
+  ];
+
+  g.selectAll("line")
+    .data(lines)
+    .enter()
+    .append("line")
+    .attr("x1", (d) => d.x1)
+    .attr("y1", (d) => d.y1)
+    .attr("x2", (d) => d.x2)
+    .attr("y2", (d) => d.y2)
+    .attr("stroke", "black")
+    .attr("stroke-width", 1);
+}
+  adjustNodePositions(nodes, width, height) {
+    switch (this.orientation) {
+      case "bottom":
+        nodes.forEach((node) => {
+          node.y = height - node.y;
+        });
+        break;
+      case "left":
+        nodes.forEach((node) => {
+          [node.x, node.y] = [node.y, node.x];
+        });
+        break;
+      case "right":
+        nodes.forEach((node) => {
+          [node.x, node.y] = [node.y, node.x];
+          node.x = width * 0.75 - node.x;
+        });
+        break;
+      case "top":
+      default:
+        break;
     }
   }
 
-  render() {
-    console.log("Render called");
+  renderLinks(g, dag) {
+    g.append("g")
+      .selectAll("path")
+      .data(dag.links())
+      .enter()
+      .append("path")
+      .attr("d", ({ source, target }) => createBezierPath(source, target))
+      .attr("fill", "none")
+      .attr("stroke", "#f19600")
+      .attr("stroke-width", 2);
+  }
+
+  renderNodes(g, dag) {
+    const nodeGroup = g
+      .append("g")
+      .selectAll("g")
+      .data(dag.nodes())
+      .enter()
+      .append("g")
+      .attr("transform", (d) => `translate(${d.x}, ${d.y})`);
+
+    nodeGroup.append("circle").attr("r", 20).attr("fill", "#99b362");
+
+    nodeGroup
+      .append("text")
+      .text((d) => d.data.id)
+      .attr("dy", "0.32em")
+      .attr("text-anchor", "middle")
+      .attr("font-size", "6px")
+      .attr("fill", "white");
+  }
+
+  renderSelect() {
     return html`
-      <div id="family-tree-svg"></div>
-      <p>Test prop: ${this.testProp}</p>
-      <button @click=${this.testMethod}>Test Button</button>
+      <sl-select
+        label="Tree Orientation"
+        value=${this.orientation}
+        @sl-change=${(e) => (this.orientation = e.target.value)}
+      >
+        <sl-option value="top">Top to Bottom</sl-option>
+        <sl-option value="bottom">Bottom to Top</sl-option>
+        <sl-option value="left">Left to Right</sl-option>
+        <sl-option value="right">Right to Left</sl-option>
+      </sl-select>
+    `;
+  }
+
+  render() {
+    return html`
+      ${this.renderSelect()}
+      <div class="family-tree-container">${this.renderFamilyTree()}</div>
     `;
   }
 }

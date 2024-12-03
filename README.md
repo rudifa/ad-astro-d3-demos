@@ -1,11 +1,64 @@
 # Astro + Lit Demo
 
+## FamilyTreeVisualization
 
+`FamilyTreeVisualization.js` is a Lit component that renders a family tree visualization using d3 and d3-dag.
 
-Directory `src/util` contains experiments in creating lit components that use d3 and
-demo files that write their render output to svg files.
+It provides a Lit component `customElements.define("family-tree-viz", FamilyTreeVisualization);`.
+
+Investigation lines:
+
+- what is the best way of importing and instantiating the component in an Astro page?
+
+Development lines:
+
+- revise the input data format; make it same as that of TreeDiagram?
+
+- add dynamic changes of input data - like in TreeDiagram?
+
+- ✅ selectable graph orientation
+
+- selectable node shapes / presentations
+
+- interactive nodes like in js_family_tree? - uses a local copy of d3-dag
+
+- add a private input data file, encrypted, open with a password.
+
+## Files
 
 ```
+ad-astro-d3-demos % tree -f src                                                                                                                                  [:bb91b02 L|✔]
+src
+├── src/components
+│   ├── src/components/CardGrid.astro
+│   ├── src/components/FamilyTreeVisualization.js
+│   ├── src/components/FileDownloader.js
+│   ├── src/components/FileProcessor.js
+│   ├── src/components/FileUploader.js
+│   ├── src/components/MyComponent.js
+│   ├── src/components/MyElement.js
+│   ├── src/components/ProcFuncs.js
+│   ├── src/components/ThemeSelector.astro
+│   └── src/components/TreeDiagram.js
+├── src/data
+│   ├── src/data/family.json
+│   ├── src/data/one-child.json
+│   └── src/data/two-children-unrelated.json
+├── src/html
+├── src/layouts
+│   ├── src/layouts/BaseLayout.astro
+│   └── src/layouts/ShoelaceLayout.astro
+├── src/pages
+│   ├── src/pages/FamilyTreeVisualization.astro
+│   ├── src/pages/fileprocessor.astro
+│   ├── src/pages/index.astro
+│   ├── src/pages/mycomponent.astro
+│   ├── src/pages/treediagram.astro
+│   └── src/pages/webapp.astro
+├── src/styles
+│   ├── src/styles/Base.css
+│   ├── src/styles/Content.css
+│   └── src/styles/Globals.css
 ├── src/util
 │   ├── src/util/.DS_Store
 │   ├── src/util/d3-hierarchy-to-svg.demo.js
@@ -18,50 +71,11 @@ demo files that write their render output to svg files.
 │   ├── src/util/multiarchy-chatgpt.test.js
 │   ├── src/util/multiarchyVisualizer.demo.js
 │   ├── src/util/multiarchyVisualizer.js
-│   ├── src/util/out.svg
-│   ├── src/util/output.svg
-│   ├── src/util/readJsonFile.js
-│   └── src/util/tree.svg
+│   └── src/util/readJsonFile.js
+├── src/.DS_Store
+└── src/env.d.ts
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Project origin
 

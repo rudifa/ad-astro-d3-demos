@@ -1,9 +1,39 @@
 ---
-// Imports and page configuration
 import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
 import { FamilyTreeVisualization } from '../components/FamilyTreeVisualization.js';
 
-// console.log('FamilyTreeVisualization:', FamilyTreeVisualization);
+const familyData1 = [
+  { id: 'Grandpa1', parentIds: [] },
+  { id: 'Grandma1', parentIds: [] },
+  { id: 'Grandpa2', parentIds: [] },
+  { id: 'Grandma2', parentIds: [] },
+  { id: 'Parent1', parentIds: ['Grandpa1', 'Grandma1'] },
+  { id: 'Parent2', parentIds: ['Grandpa2', 'Grandma2'] },
+  { id: 'Parent3', parentIds: ['Grandpa1', 'Grandma1'] },
+  { id: 'Child1', parentIds: ['Parent1', 'Parent2'] },
+  { id: 'Child2', parentIds: ['Parent1', 'Parent2'] },
+  { id: 'Child3', parentIds: ['Parent3'] },
+];
+
+const familyData2 = [
+  { id: 'Grandpa1', parentIds: [] },
+  { id: 'Grandma1', parentIds: [] },
+  { id: 'Grandpa2', parentIds: [] },
+  { id: 'Grandma2', parentIds: [] },
+  { id: 'Parent1', parentIds: ['Grandpa1', 'Grandma1'] },
+  { id: 'Parent2', parentIds: ['Grandpa2', 'Grandma2'] },
+  { id: 'Parent3', parentIds: ['Grandpa1', 'Grandma1'] },
+  { id: 'Parent4', parentIds: ['Grandpa2', 'Grandma2'] },
+  { id: 'Child1', parentIds: ['Parent1', 'Parent2'] },
+  { id: 'Child2', parentIds: ['Parent1', 'Parent2'] },
+  { id: 'Child3', parentIds: ['Parent3'] },
+  { id: 'Child4', parentIds: ['Parent3', 'Parent4'] },
+  { id: 'Child5', parentIds: ['Parent4'] },
+  { id: 'Grandchild1', parentIds: ['Child1'] },
+  { id: 'Grandchild2', parentIds: ['Child2', 'Child3'] },
+  { id: 'Grandchild3', parentIds: ['Child4'] },
+  { id: 'Grandchild4', parentIds: ['Child5'] },
+];
 ---
 
 <ShoelaceLayout title='D3-dag Family Tree Visualization'>
@@ -13,73 +43,46 @@ import { FamilyTreeVisualization } from '../components/FamilyTreeVisualization.j
     </h1>
 
     <section class='mb-12'>
-      <p>try 1st way</p>
-      <family-tree-viz width='800' height='600'></family-tree-viz>
-    </section>
-
-    <section class='mb-12'>
-      <h2 class='text-2xl font-semibold mb-4'>Default Family Tree</h2>
+      <h2 class='text-2xl font-semibold mb-4'>Family Tree</h2>
       <p class='mb-4'>
-        This visualization uses the default family data built into the
-        component.
+        This visualization uses the family tree data built into the page.
       </p>
-      <p>try 2nd way</p>
+
+      <sl-select label='Select Family Data' id='familyDataSelect'>
+        <sl-option value='familyData1'>Family Data 1</sl-option>
+        <sl-option value='familyData2'>Family Data 2</sl-option>
+      </sl-select>
+
       <FamilyTreeVisualization
         client:load
-        class='border-2 border-gray-200 shadow-lg'
+        family-data={JSON.stringify(familyData2)}
+        class='family-tree-viz border-2 border-gray-300 rounded-lg shadow-md p-4'
+        id='family-tree-svg'
       />
     </section>
-
-    <section class='mb-12'>
-      <h2 class='text-2xl font-semibold mb-4'>
-        Custom Multi-Generational Family
-      </h2>
-      <p class='mb-4'>
-        A more complex family tree showing multiple generations and multiple
-        parents.
-      </p>
-      <p>try 3rd way</p>
-      <family-tree-viz
-        family-data=`[
-          {"id":"Grandpa1","parentIds":[]},
-          {"id":"Grandma1","parentIds":[]},
-          {"id":"Grandpa2","parentIds":[]},
-          {"id":"Grandma2","parentIds":[]},
-          {"id":"Parent1","parentIds":["Grandpa1","Grandma1"]},
-          {"id":"Parent2","parentIds":["Grandpa2","Grandma2"]},
-          {"id":"Parent3","parentIds":["Grandpa1","Grandma1"]},
-          {"id":"Child1","parentIds":["Parent1","Parent2"]},
-          {"id":"Child2","parentIds":["Parent1","Parent2"]},
-          {"id":"Child3","parentIds":["Parent3"]}
-        ]`
-        class='border-2 border-blue-200 shadow-lg'></family-tree-viz>
-    </section>
-
-    <section>
-      <h2 class='text-2xl font-semibold mb-4'>Implementation Details</h2>
-      <div class='bg-gray-100 p-6 rounded-lg'>
-        <h3 class='text-xl font-medium mb-2'>Key Features</h3>
-        <ul class='list-disc list-inside space-y-2'>
-          <li>Uses Lit element for custom web component</li>
-          <li>Integrates d3-dag for complex hierarchical layouts</li>
-          <li>Supports dynamic data injection via attribute</li>
-          <li>Renders DAG with multiple parent relationships</li>
-        </ul>
-      </div>
-    </section>
   </div>
-
-  <script type='module'>
-    // import '../components/FamilyTreeVisualization.js';
-  </script>
 </ShoelaceLayout>
 
+<script define:vars={{ familyData1, familyData2 }}>
+  document.addEventListener('DOMContentLoaded', () => {
+    const select = document.getElementById('familyDataSelect');
+    const familyTreeViz = document.getElementById('family-tree-svg');
+
+    select.addEventListener('sl-change', (event) => {
+      const selectedData =
+        event.target.value === 'familyData1' ? familyData1 : familyData2;
+      familyTreeViz.setAttribute('family-data', JSON.stringify(selectedData));
+    });
+  });
+</script>
+
 <style>
-  family-tree-viz {
-    display: block;
-    width: 100%;
-    max-width: 800px;
-    height: 400px;
-    margin: 0 auto;
+  .family-tree-viz {
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 1rem;
   }
 </style>
