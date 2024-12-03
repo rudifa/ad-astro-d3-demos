@@ -49,7 +49,7 @@ export class FamilyTreeVisualization extends LitElement {
     .family-tree-container {
       width: 100%;
       height: 600px; // Or any other fixed height
-      overflow: auto;
+      /* overflow: auto; */
       border: 1px solid #ccc; // Optional: adds a border around the scrollable area
     }
     svg {
@@ -172,14 +172,14 @@ export class FamilyTreeVisualization extends LitElement {
       let viewBoxHeight = yExtent[1] - yExtent[0] + nodeSize[1];
 
       // Create SVG element using d3
+      const minWidth = 800; // Minimum width in pixels
+      const svgWidth = Math.max(width, minWidth);
+
       const svg = d3
         .create("svg")
-        .attr("width", viewBoxWidth)
-        .attr("height", viewBoxHeight)
-        .style("display", "block") // Ensures the SVG doesn't have extra space below
-        .style("max-width", "100%")
-        .style("max-height", "600px") // Or any other max height you prefer
-        .style("overflow", "auto"); // Enables scrolling
+        .attr("viewBox", [0, 0, svgWidth, height])
+        .attr("width", svgWidth)
+        .attr("height", height);
 
       // Log the viewport size
       console.log(`Viewport size: ${svg.attr("viewBox")}`);
