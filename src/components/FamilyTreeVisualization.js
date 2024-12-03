@@ -21,6 +21,10 @@ function createBezierPath(source, target) {
               C${source.x},${midY} ${target.x},${midY} ${target.x},${target.y}`;
 }
 
+const FIXED_NODE_SIZE = 150; // pixels
+const FIXED_CIRCLE_RADIUS = 40; // pixels
+const FIXED_FONT_SIZE = "16px"; // pixels
+
 export class FamilyTreeVisualization extends LitElement {
   static properties = {
     familyData: {
@@ -42,11 +46,14 @@ export class FamilyTreeVisualization extends LitElement {
       height: 100%;
       min-height: 400px; // Add this line
     }
-    svg {
+    .family-tree-container {
       width: 100%;
-      height: 100%;
-      max-width: 100%;
-      max-height: 600px;
+      height: 600px; // Or any other fixed height
+      overflow: auto;
+      border: 1px solid #ccc; // Optional: adds a border around the scrollable area
+    }
+    svg {
+      display: block;
     }
 
     sl-select {
@@ -139,7 +146,7 @@ export class FamilyTreeVisualization extends LitElement {
       console.log("DAG structure:", dag);
 
       // Layout configuration
-      const nodeSize = [100, 100];
+      const nodeSize = [FIXED_NODE_SIZE, FIXED_NODE_SIZE];
 
       // Sugiyama layout (specialized for DAGs)
       const layout = sugiyama()
@@ -167,9 +174,12 @@ export class FamilyTreeVisualization extends LitElement {
       // Create SVG element using d3
       const svg = d3
         .create("svg")
-        .attr("width", "100%")
-        .attr("height", "100%")
-        .attr("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`);
+        .attr("width", viewBoxWidth)
+        .attr("height", viewBoxHeight)
+        .style("display", "block") // Ensures the SVG doesn't have extra space below
+        .style("max-width", "100%")
+        .style("max-height", "600px") // Or any other max height you prefer
+        .style("overflow", "auto"); // Enables scrolling
 
       // Log the viewport size
       console.log(`Viewport size: ${svg.attr("viewBox")}`);
@@ -259,14 +269,17 @@ export class FamilyTreeVisualization extends LitElement {
       .append("g")
       .attr("transform", (d) => `translate(${d.x}, ${d.y})`);
 
-    nodeGroup.append("circle").attr("r", 20).attr("fill", "#99b362");
+    nodeGroup
+      .append("circle")
+      .attr("r", FIXED_CIRCLE_RADIUS)
+      .attr("fill", "#99b362");
 
     nodeGroup
       .append("text")
       .text((d) => d.data.id)
       .attr("dy", "0.32em")
       .attr("text-anchor", "middle")
-      .attr("font-size", "6px")
+      .attr("font-size", FIXED_FONT_SIZE)
       .attr("fill", "white");
   }
 
