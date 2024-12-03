@@ -11,8 +11,8 @@ import {
   coordCenter,
 } from "d3-dag";
 
-console.log("d3 version:", d3.version);
-console.log("d3-dag available:", !!graphStratify);
+// console.log("d3 version:", d3.version);
+// console.log("d3-dag available:", !!graphStratify);
 
 // Custom function to create a Bézier curve path
 function createBezierPath(source, target) {
@@ -73,7 +73,7 @@ export class FamilyTreeVisualization extends LitElement {
     this.height = 600;
     this.orientation = "top"; // Can be 'top', 'bottom', 'left', or 'right'
     this.testProp = "Initial value of testProp";
-    console.log("Constructor called");
+    // console.log("Constructor called");
   }
 
   firstUpdated() {
@@ -83,14 +83,19 @@ export class FamilyTreeVisualization extends LitElement {
   updated(changedProperties) {
     super.updated(changedProperties);
 
-    if (changedProperties.has("familyData") || changedProperties.has("orientation")) {
+    if (
+      changedProperties.has("familyData") ||
+      changedProperties.has("orientation")
+    ) {
       // Use requestAnimationFrame to ensure the DOM is ready
       requestAnimationFrame(() => {
-        const placeholder = this.shadowRoot.getElementById('family-tree-placeholder');
+        const placeholder = this.shadowRoot.getElementById(
+          "family-tree-placeholder",
+        );
         if (placeholder) {
           const svg = this.renderFamilyTree();
           if (svg) {
-            placeholder.innerHTML = '';
+            placeholder.innerHTML = "";
             placeholder.appendChild(svg.node());
           }
         }
@@ -112,15 +117,16 @@ export class FamilyTreeVisualization extends LitElement {
   }
 
   renderFamilyTree() {
+    console.log("renderFamilyTree");
+
     if (typeof document === "undefined") {
       // Return a placeholder when running on the server
       return html`<div id="family-tree-placeholder"></div>`;
     }
 
     try {
-      console.log("Rendering family tree called");
-      console.log("Family data:", this.familyData);
-      console.log("Orientation:", this.orientation);
+      // console.log("Family data:", this.familyData);
+      // console.log("Orientation:", this.orientation);
 
       if (!this.familyData || this.familyData.length === 0) {
         console.warn("No family data to render");
@@ -133,8 +139,7 @@ export class FamilyTreeVisualization extends LitElement {
       console.log("DAG structure:", dag);
 
       // Layout configuration
-      const margin = { top: 40, right: 40, bottom: 40, left: 40 };
-      const nodeSize = [80, 80];
+      const nodeSize = [100, 100];
 
       // Sugiyama layout (specialized for DAGs)
       const layout = sugiyama()
@@ -156,23 +161,8 @@ export class FamilyTreeVisualization extends LitElement {
       const xExtent = d3.extent(dag.nodes(), (node) => node.x);
       const yExtent = d3.extent(dag.nodes(), (node) => node.y);
 
-      let newWidth = xExtent[1] - xExtent[0] + nodeSize[0];
-      let newHeight = yExtent[1] - yExtent[0] + nodeSize[1];
-
-      switch (this.orientation) {
-        case "left":
-        case "right":
-          [newWidth, newHeight] = [newHeight, newWidth];
-          break;
-        default:
-          break;
-      }
-
-      // Adjust SVG viewBox based on the new dimensions
-      const [viewBoxWidth, viewBoxHeight] = [
-        newWidth + margin.left + margin.right,
-        newHeight + margin.top + margin.bottom,
-      ];
+      let viewBoxWidth = xExtent[1] - xExtent[0] + nodeSize[0];
+      let viewBoxHeight = yExtent[1] - yExtent[0] + nodeSize[1];
 
       // Create SVG element using d3
       const svg = d3
@@ -181,12 +171,11 @@ export class FamilyTreeVisualization extends LitElement {
         .attr("height", "100%")
         .attr("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`);
 
-      const g = svg
-        .append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
+      // Log the viewport size
+      console.log(`Viewport size: ${svg.attr("viewBox")}`);
 
-      console.log("SVG:", svg);
-      console.log("G:", g);
+      const g = svg.append("g");
+      // .attr("transform", `translate(${margin.left},${margin.top})`);
 
       // Render box rect
       this.renderBoxRect(g, viewBoxWidth, viewBoxHeight);
@@ -196,6 +185,9 @@ export class FamilyTreeVisualization extends LitElement {
 
       // Render nodes
       this.renderNodes(g, dag);
+
+      // console.log("svg:", svg);
+      // console.log("g:", g);
 
       return svg;
     } catch (error) {
@@ -219,7 +211,7 @@ export class FamilyTreeVisualization extends LitElement {
       .attr("y1", (d) => d.y1)
       .attr("x2", (d) => d.x2)
       .attr("y2", (d) => d.y2)
-      .attr("stroke", "black")
+      .attr("stroke", "gray")
       .attr("stroke-width", 1);
   }
   adjustNodePositions(nodes, width, height) {
@@ -279,6 +271,10 @@ export class FamilyTreeVisualization extends LitElement {
   }
 
   renderSelect() {
+    if (typeof window === "undefined") {
+      // prevent rendering on the server
+      return "";
+    }
     return html`
       <sl-select
         label="Tree Orientation"
