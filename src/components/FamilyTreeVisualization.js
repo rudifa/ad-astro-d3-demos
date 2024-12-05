@@ -84,7 +84,12 @@ export class FamilyTreeVisualization extends LitElement {
     return [
       { id: "Grandpa", parentIds: [], age: 70, occupation: "Retired" },
       { id: "Grandma", parentIds: [] },
-      { id: "Parent1", parentIds: ["Grandpa", "Grandma"], age: 45, occupation: "Engineer" },
+      {
+        id: "Parent1",
+        parentIds: ["Grandpa", "Grandma"],
+        age: 45,
+        occupation: "Engineer",
+      },
       { id: "Parent2", parentIds: ["Grandpa", "Grandma"] },
       { id: "Child1", parentIds: ["Parent1"], age: 20, occupation: "Student" },
       { id: "Child2", parentIds: ["Parent2"] },
@@ -135,9 +140,6 @@ export class FamilyTreeVisualization extends LitElement {
     }
 
     try {
-      // console.log("Family data:", this.familyData);
-      // console.log("Orientation:", this.orientation);
-
       if (!this.familyData || this.familyData.length === 0) {
         console.warn("No family data to render");
         return null;
@@ -147,6 +149,10 @@ export class FamilyTreeVisualization extends LitElement {
       const dag = graphStratify()(this.familyData);
 
       console.log("DAG structure:", dag);
+
+      // Convert nodes and links to arrays
+      const nodesArray = Array.from(dag.nodes());
+      const linksArray = Array.from(dag.links());
 
       // Layout configuration
       const nodeSize = [FIXED_NODE_SIZE, FIXED_NODE_SIZE];
@@ -161,46 +167,52 @@ export class FamilyTreeVisualization extends LitElement {
       // Apply layout
       const { width, height } = layout(dag);
 
-      // Get reference to dag nodes
-      const nodes = dag.nodes();
+      console.log("Nodes array:", nodesArray);
+      console.log("Links array:", linksArray);
+      console.log("Width:", width);
+      console.log("Height:", height);
 
       // Adjust node positions based on orientation
-      this.adjustNodePositions(nodes, width, height);
+      this.adjustNodePositions(nodesArray, width, height);
 
       // Recalculate width and height after adjusting positions
-      const xExtent = d3.extent(dag.nodes(), (node) => node.x);
-      const yExtent = d3.extent(dag.nodes(), (node) => node.y);
+      const xExtent = d3.extent(nodesArray, (node) => node.x);
+      const yExtent = d3.extent(nodesArray, (node) => node.y);
 
       let viewBoxWidth = xExtent[1] - xExtent[0] + nodeSize[0];
       let viewBoxHeight = yExtent[1] - yExtent[0] + nodeSize[1];
 
       // Create SVG element using d3
-      const minWidth = 800; // Minimum width in pixels
-      const svgWidth = Math.max(width, minWidth);
+      const minWidth = 900; // Minimum width in pixels
+      let svgWidth, svgHeight;
+
+      if (this.orientation === "left" || this.orientation === "right") {
+        // Swap width and height for left and right orientations
+        svgWidth = Math.max(height, minWidth);
+        svgHeight = width;
+      } else {
+        svgWidth = Math.max(width, minWidth);
+        svgHeight = height;
+      }
 
       const svg = d3
         .create("svg")
-        .attr("viewBox", [0, 0, svgWidth, height])
+        .attr("viewBox", [0, 0, svgWidth, svgHeight])
         .attr("width", svgWidth)
-        .attr("height", height);
+        .attr("height", svgHeight);
 
-      // Log the viewport size
       console.log(`Viewport size: ${svg.attr("viewBox")}`);
 
       const g = svg.append("g");
-      // .attr("transform", `translate(${margin.left},${margin.top})`);
 
       // Render box rect
       this.renderBoxRect(g, viewBoxWidth, viewBoxHeight);
 
       // Render links
-      this.renderLinks(g, dag);
+      this.renderLinks(g, linksArray);
 
       // Render nodes
-      this.renderNodes(g, dag);
-
-      // console.log("svg:", svg);
-      // console.log("g:", g);
+      this.renderNodes(g, nodesArray);
 
       return svg;
     } catch (error) {
@@ -228,33 +240,47 @@ export class FamilyTreeVisualization extends LitElement {
       .attr("stroke-width", 1);
   }
   adjustNodePositions(nodes, width, height) {
-    switch (this.orientation) {
-      case "bottom":
-        nodes.forEach((node) => {
-          node.y = height - node.y;
-        });
-        break;
-      case "left":
-        nodes.forEach((node) => {
-          [node.x, node.y] = [node.y, node.x];
-        });
-        break;
-      case "right":
-        nodes.forEach((node) => {
-          [node.x, node.y] = [node.y, node.x];
-          node.x = width * 0.75 - node.x;
-        });
-        break;
-      case "top":
-      default:
-        break;
-    }
+    // Calculate the center of the graph
+    let centerX = width / 2;
+    let centerY = height / 2;
+
+    // Apply rotations
+    nodes.forEach((node) => {
+      let cx = centerX;
+      let cy = centerY;
+
+      // Translate to origin
+      let x = node.x - cx;
+      let y = node.y - cy;
+
+      switch (this.orientation) {
+        case "right":
+          [x, y] = [y, -x];
+          [cx, cy] = [cy, cx];
+          break;
+        case "bottom":
+          [x, y] = [-x, -y];
+          break;
+        case "left":
+          [x, y] = [-y, x];
+          [cx, cy] = [cy, cx];
+          break;
+        case "top":
+        default:
+          // No change for top orientation
+          break;
+      }
+
+      // Translate back
+      node.x = x + cx;
+      node.y = y + cy;
+    });
   }
 
-  renderLinks(g, dag) {
+  renderLinks(g, linksArray) {
     g.append("g")
       .selectAll("path")
-      .data(dag.links())
+      .data(linksArray)
       .enter()
       .append("path")
       .attr("d", ({ source, target }) => createBezierPath(source, target))
@@ -263,11 +289,11 @@ export class FamilyTreeVisualization extends LitElement {
       .attr("stroke-width", 2);
   }
 
-  renderNodes(g, dag) {
+  renderNodes(g, nodesArray) {
     const nodeGroup = g
       .append("g")
       .selectAll("g")
-      .data(dag.nodes())
+      .data(nodesArray)
       .enter()
       .append("g")
       .attr("transform", (d) => `translate(${d.x}, ${d.y})`);
@@ -282,12 +308,9 @@ export class FamilyTreeVisualization extends LitElement {
       .attr("text-anchor", "middle")
       .attr("font-size", FIXED_FONT_SIZE)
       .attr("fill", "white")
-      .each(function(d) {
+      .each(function (d) {
         const text = d3.select(this);
-        text.append("tspan")
-          .attr("x", 0)
-          .attr("dy", "-0.2em")
-          .text(d.data.id);
+        text.append("tspan").attr("x", 0).attr("dy", "-0.2em").text(d.data.id);
 
         if (d.data.age !== undefined || d.data.occupation !== undefined) {
           let infoText = "(";
@@ -302,10 +325,7 @@ export class FamilyTreeVisualization extends LitElement {
           }
           infoText += ")";
 
-          text.append("tspan")
-            .attr("x", 0)
-            .attr("dy", "1.2em")
-            .text(infoText);
+          text.append("tspan").attr("x", 0).attr("dy", "1.2em").text(infoText);
         }
       });
   }
