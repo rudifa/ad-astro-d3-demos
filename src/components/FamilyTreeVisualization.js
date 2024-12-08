@@ -9,10 +9,10 @@ import {
   layeringLongestPath,
   decrossTwoLayer,
   coordCenter,
-} from "d3-dag";
+} from "d3dag";
 
 // console.log("d3 version:", d3.version);
-// console.log("d3-dag available:", !!graphStratify);
+// console.log("d3dag available:", !!graphStratify);
 
 // Custom function to create a Bézier curve path
 function createBezierPath(source, target) {

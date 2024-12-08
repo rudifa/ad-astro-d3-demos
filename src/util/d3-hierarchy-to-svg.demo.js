@@ -76,6 +76,7 @@ const svgContent = `
 `;
 
 // Save SVG to file
-fs.writeFileSync("tree.svg", svgContent);
+const filePath = "d3-hierarchy-to-svg.demo.svg";
+fs.writeFileSync(filePath, svgContent);
 
-console.log("SVG file created: tree.svg");
+console.log("SVG file created:", filePath);

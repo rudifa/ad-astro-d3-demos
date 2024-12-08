@@ -1,12 +1,12 @@
 import { expect, test } from "vitest";
-import { convertToHierarchy } from "./json-to-d3-hierarchy"; // func under test
+import { personsToHierarchyInput } from "./json-to-d3-hierarchy"; // func under test
 import { readJsonFile } from "./readJsonFile.js";
 
 import path from "path";
 
 const PROJECT_ROOT = path.resolve(__dirname, "../../"); // w.r.t this test file
 
-const jsonOneChild = {
+const twoChildren_persons = {
   persons: [
     {
       name: "Alice Johnson",
@@ -21,7 +21,7 @@ const jsonOneChild = {
   ],
 };
 
-const expectedOneChild = {
+const twoChildren_d3hierarchy = {
   name: "Ancestors",
   children: [
     {
@@ -53,18 +53,18 @@ const expectedOneChild = {
   ],
 };
 
-// Test the convertToHierarchy function with in-file data
-test("convertToHierarchy converts local data with one child", () => {
-  const result = convertToHierarchy(jsonOneChild);
+// Test the personsToHierarchyInput function with in-file data
+test("personsToHierarchyInput converts local data with twoChildren_persons", () => {
+  const result = personsToHierarchyInput(twoChildren_persons);
 
-  expect(result).toEqual(expectedOneChild);
+  expect(result).toEqual(twoChildren_d3hierarchy);
 });
 
-// Test the convertToHierarchy function with external data
-test("convertToHierarchy converts file data with one child", async () => {
+// Test the personsToHierarchyInput function with external data
+test("personsToHierarchyInput converts data from file two-children.json", async () => {
   console.log("process.cwd():", process.cwd());
-  // Read input dataconst dataPath = path.join(PROJECT_ROOT, 'src', 'data', 'one-child.json');
-  const dataPath = path.join(PROJECT_ROOT, "src", "data", "one-child.json");
+  // Read input fom file 'two-children.json'
+  const dataPath = path.join(PROJECT_ROOT, "src", "data", "two-children.json");
   const data = await readJsonFile(dataPath);
 
   // Check if the imported data is an object
@@ -81,11 +81,11 @@ test("convertToHierarchy converts file data with one child", async () => {
   }
 
   // Convert the data to a hierarchy and check properties
-  const result = convertToHierarchy(data);
+  const result = personsToHierarchyInput(data);
   expect(result).toHaveProperty("name", "Ancestors");
   expect(result.children).toBeInstanceOf(Array);
   expect(result.children.length).toBeGreaterThan(0);
 
   // Check the result of the conversion
-  expect(result).toEqual(expectedOneChild);
+  expect(result).toEqual(twoChildren_d3hierarchy);
 });

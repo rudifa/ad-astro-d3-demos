@@ -3,12 +3,14 @@
     {
       "name": "Alice Johnson",
       "father": "Tom Johnson",
-      "mother": "Mary Williams"
+      "mother": "Mary Williams",
+      "age": 10
     },
     {
       "name": "Bob Johnson",
       "father": "Tom Johnson",
-      "mother": "Mary Williams"
+      "mother": "Mary Williams",
+      "age": 12
     }
   ]
 }

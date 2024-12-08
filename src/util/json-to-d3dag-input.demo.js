@@ -1,6 +1,6 @@
 #!/usr/local/bin/node
 
-import { personsToHierarchyInput } from "./json-to-d3-hierarchy.js"; // func to demo
+import { personsToD3DagInput } from "./json-to-d3dag-input.js"; // func to demo
 import { readJsonFile } from "../util/readJsonFile.js";
 
 // Sample data
@@ -42,7 +42,7 @@ async function main() {
 
   {
     // Convert from local json object
-    const hierarchy = personsToHierarchyInput(sampleData);
+    const hierarchy = personsToD3DagInput(sampleData);
     console.log("From sample data:", JSON.stringify(hierarchy, null, 2));
   }
 
@@ -50,7 +50,7 @@ async function main() {
     // Convert from a local file
     const file = resolve(__dirname, "../data/one-child.json");
     const data = await readJsonFile(file);
-    const hierarchy = personsToHierarchyInput(data);
+    const hierarchy = personsToD3DagInput(data);
     console.log(`From local file ${file}:`, JSON.stringify(hierarchy, null, 2));
   } catch (error) {
     console.error("Error processing file:", error);
@@ -60,7 +60,7 @@ async function main() {
     // Convert from another local file
     const file = resolve(__dirname, "../data/two-children-unrelated.json");
     const data = await readJsonFile(file);
-    const hierarchy = personsToHierarchyInput(data);
+    const hierarchy = personsToD3DagInput(data);
     console.log(`From local file ${file}:`, JSON.stringify(hierarchy, null, 2));
   } catch (error) {
     console.error("Error processing file:", error);

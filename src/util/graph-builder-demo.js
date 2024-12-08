@@ -4,10 +4,10 @@
 rudifa
 could you create an example of code (a class?) that works like the builder()?
 
-d3-dag-demo.js
+d3dag-demo.js
 :24-57
 GitHub Copilot
-Sure, I can create a simplified example of a class that works similarly to the builder() function from the d3-dag library. This example will demonstrate how to build a graph with nodes and links.
+Sure, I can create a simplified example of a class that works similarly to the builder() function from the d3dag library. This example will demonstrate how to build a graph with nodes and links.
 
 Here's a basic implementation:
  */
@@ -82,7 +82,7 @@ The Graph class manages nodes and links.
 The GraphBuilder class provides a fluent interface to add edges and build the graph.
 The addEdge method adds nodes and links to the graph.
 The build method returns the constructed graph.
-This is a simplified version and does not include all the features of the d3-dag library,
+This is a simplified version and does not include all the features of the d3dag library,
 but it demonstrates the basic concept of building a graph using a builder pattern.
 
  */

@@ -1,12 +1,12 @@
 #! /usr/bin/env node
 
-// from https://erikbrinkman.github.io/d3-dag/modules.html
+// from https://erikbrinkman.github.io/d3dag/modules.html
 
 // import relevant functions in whatever way is necessary
-import pkg from "d3-dag";
+import pkg from "d3dag";
 const { graphConnect, sugiyama } = pkg;
 
-// import { graphConect, sugiyama } from "d3-dag";
+// import { graphConect, sugiyama } from "d3dag";
 const builder = graphConnect(); // optionally customize with fluent interface
 const graph = builder([
   ["a", "b"],

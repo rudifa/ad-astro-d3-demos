@@ -2,7 +2,7 @@
 
 ## FamilyTreeVisualization
 
-`FamilyTreeVisualization.js` is a Lit component that renders a family tree visualization using d3 and d3-dag.
+`FamilyTreeVisualization.js` is a Lit component that renders a family tree visualization using d3 and d3dag.
 
 It provides a Lit component `customElements.define("family-tree-viz", FamilyTreeVisualization);`.
 
@@ -20,7 +20,7 @@ Development lines:
 
 - selectable node shapes / presentations
 
-- interactive nodes like in js_family_tree? - uses a local copy of d3-dag
+- interactive nodes like in js_family_tree? - uses a local copy of d3dag
 
 - add a private input data file, encrypted, open with a password.
 
