@@ -25,6 +25,19 @@ const FIXED_NODE_SIZE = 150; // pixels
 const FIXED_CIRCLE_RADIUS = 40; // pixels
 const FIXED_FONT_SIZE = "12px"; // pixels
 
+/**
+ * A Lit component to visualize a family tree using d3-dag methods.
+ *
+ * Input data format: array of objects representing family members, each with properties:
+ * [
+ *  { id: "Alice", parentIds: [ "Bob", "Carol"] },
+ *  //...
+ *  //...
+ * ]
+ * where parentIds array may be empty for individuals without parents;
+ * other properties (e.g., age, gender) are optional.
+ */
+
 export class FamilyTreeVisualization extends LitElement {
   static properties = {
     familyData: {
