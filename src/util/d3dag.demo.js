@@ -6,7 +6,7 @@ import {
   layeringLongestPath,
   decrossTwoLayer,
   coordCenter,
-} from "d3dag";
+} from "d3-dag";
 
 const FIXED_NODE_SIZE = 150; // pixels
 

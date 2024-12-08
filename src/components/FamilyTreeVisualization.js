@@ -9,7 +9,7 @@ import {
   layeringLongestPath,
   decrossTwoLayer,
   coordCenter,
-} from "d3dag";
+} from "d3-dag";
 
 // console.log("d3 version:", d3.version);
 // console.log("d3dag available:", !!graphStratify);
