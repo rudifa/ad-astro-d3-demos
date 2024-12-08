@@ -105,7 +105,9 @@ import ShoelaceLayout from '../layouts/ShoelaceLayout.astro';
           document.getElementById('output-content').textContent =
             JSON.stringify(e.detail.processedData, null, 2); // Display the processed JSON data
         }
-        // Update the TreeDiagram
+        //
+        // Update the TreeDiagram by setting its data property and requesting an update
+        //
         if (treeDiagram instanceof HTMLElement && e.detail.processedData) {
           treeDiagram.data = e.detail.processedData; // Set the data property directly
           treeDiagram.requestUpdate(); // Request an update

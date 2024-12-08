@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { personsToHierarchyInput } from "./json-to-d3-hierarchy"; // func under test
+import { personsToHierarchyInput } from "./persons-to-d3-hierarchy"; // func under test
 import { readJsonFile } from "./readJsonFile.js";
 
 import path from "path";

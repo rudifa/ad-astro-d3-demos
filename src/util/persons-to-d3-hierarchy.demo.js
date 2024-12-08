@@ -1,6 +1,6 @@
 #!/usr/local/bin/node
 
-import { personsToHierarchyInput } from "./json-to-d3-hierarchy.js"; // func to demo
+import { personsToHierarchyInput } from "./persons-to-d3-hierarchy.js"; // func to demo
 import { readJsonFile } from "../util/readJsonFile.js";
 
 // Sample data
@@ -36,7 +36,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 async function main() {
-  console.log("Running main function: json-to-d3-hierarchy.js");
+  console.log("Running main function: persons-to-d3-hierarchy.js");
   console.log("Current directory:", process.cwd());
   console.log("Script directory:", __dirname);
 

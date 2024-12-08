@@ -1,6 +1,10 @@
 #! /usr/bin/env node
 
 /**
+ * Demonstrate how to use D3.js to create a hierarchical tree layout
+ */
+
+/**
 rudifa
 could you create an example of code (a class?) that works like the builder()?
 

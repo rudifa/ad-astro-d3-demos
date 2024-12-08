@@ -62,9 +62,9 @@ src
 ├── src/util
 │   ├── src/util/.DS_Store
 │   ├── src/util/d3-hierarchy-to-svg.demo.js
-│   ├── src/util/json-to-d3-hierarchy.demo.js
-│   ├── src/util/json-to-d3-hierarchy.js
-│   ├── src/util/json-to-d3-hierarchy.test.js
+│   ├── src/util/persons-to-d3-hierarchy.demo.js
+│   ├── src/util/persons-to-d3-hierarchy.js
+│   ├── src/util/persons-to-d3-hierarchy.test.js
 │   ├── src/util/lit-to-svg.demo.js
 │   ├── src/util/multiarchy-chatgpt.demo.js
 │   ├── src/util/multiarchy-chatgpt.js

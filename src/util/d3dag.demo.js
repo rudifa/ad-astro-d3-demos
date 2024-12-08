@@ -10,6 +10,9 @@ import {
 
 const FIXED_NODE_SIZE = 150; // pixels
 
+/**
+ * Run the d3-dag library functions with a sample input.
+ */
 
 // d3dag-input format
 const twoChildren_d3dag = [

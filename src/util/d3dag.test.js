@@ -1,11 +1,15 @@
 import { expect, test } from "vitest";
-import { personsToD3DagInput } from "./json-to-d3dag-input.js"; // func under test
+import { personsToD3DagInput } from "./persons-to-d3dag-input.js"; // func under test
 import { readJsonFile } from "./readJsonFile.js";
 import path from "path";
 
 const logFlag = process.env.LOG !== "";
 
 const PROJECT_ROOT = path.resolve(__dirname, "../../"); // w.r.t this test file
+
+/**
+ * Test personsToD3DagInput function
+ */
 
 // `persons` format
 const twoChildren_persons = {

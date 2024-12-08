@@ -6,6 +6,10 @@
 import pkg from "d3dag";
 const { graphConnect, sugiyama } = pkg;
 
+/**
+ * Run the d3-dag library functions with a sample input.
+ */
+
 // import { graphConect, sugiyama } from "d3dag";
 const builder = graphConnect(); // optionally customize with fluent interface
 const graph = builder([

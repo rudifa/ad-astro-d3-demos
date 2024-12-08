@@ -10,6 +10,10 @@
 import * as d3 from "d3";
 import fs from "fs";
 
+/**
+ * Demonstrate how to use D3.js to create a hierarchical tree layout
+ */
+
 // Sample hierarchical data
 const data = {
   name: "Root",
