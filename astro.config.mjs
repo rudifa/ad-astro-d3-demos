@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config';
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 
-import vercel from '@astrojs/vercel/static';
+import vercel from '@astrojs/vercel';
 import lit from '@astrojs/lit';
 
 // https://astro.build/config
