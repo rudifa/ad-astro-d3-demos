@@ -4,7 +4,7 @@
  * @param {Array} data.persons - Array of person objects with name, father, and mother properties
  * @returns {Object} A hierarchical tree structure with a root "Ancestors" node and nested children
  */
-export function convertToHierarchy(data) {
+export function personsToHierarchyInput(data) {
   // Create a map to store all nodes by name
   const nodesMap = new Map();
 

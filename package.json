@@ -22,9 +22,9 @@
   ],
   "scripts": {
     "format": "prettier \"src/**/*.{astro,js,html,css}\" --write",
-    "lint": "eslint src --ext .js,.astro",
-    "dev": "astro dev",
-    "start": "astro dev",
+    "lint": "eslint src",
+    "dev": "astro dev --port 4322",
+    "start": "astro dev --port 4322",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -34,22 +34,28 @@
   },
   "dependencies": {
     "@astrojs/lit": "^4.3.0",
-    "@astrojs/vercel": "^7.8.2",
+    "@astrojs/vercel": "^11.0.5",
+    "@eslint/js": "^10.0.1",
     "@shoelace-style/shoelace": "^2.17.1",
-    "astro": "^4.16.6",
+    "@svgdotjs/svg.js": "^3.2.4",
+    "astro": "^7.2.2",
     "d3": "^7.9.0",
+    "d3-dag": "^1.1.0",
+    "jsdom": "^30.0.1",
     "lit": "^3.2.1",
-    "vitest": "^2.1.3"
+    "svgdom": "^0.1.19",
+    "vitest": "^4.1.10",
+    "xmldom": "^0.6.0"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^8.10.0",
-    "eslint": "^8.56.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-astro": "^1.3.0",
+    "eslint": "^10.8.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-astro": "^3.1.0",
     "husky": "^9.1.6",
     "prettier": "^3.3.3",
     "prettier-plugin-astro": "^0.14.1",
-    "vite-plugin-static-copy": "^2.0.0"
+    "vite-plugin-static-copy": "^4.1.1"
   },
   "publishConfig": {
     "access": "restricted"

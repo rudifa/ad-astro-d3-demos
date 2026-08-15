@@ -1,6 +1,6 @@
 #!/usr/local/bin/node
 
-import { convertToHierarchy } from "./json-to-d3-hierarchy.js"; // func to demo
+import { personsToD3DagInput } from "./persons-to-d3dag-input.js"; // func to demo
 import { readJsonFile } from "../util/readJsonFile.js";
 
 // Sample data
@@ -20,7 +20,7 @@ const sampleData = {
 };
 
 /**
- * Main function to demonstrate the usage of convertToHierarchy.
+ * Main function to demonstrate the usage of personsToHierarchyInput.
  * It processes sample data and reads from JSON files to create hierarchies.
  * The function showcases three scenarios:
  * 1. Converting a local JSON object
@@ -36,13 +36,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 async function main() {
-  console.log("Running main function: json-to-d3-hierarchy.js");
+  console.log("Running main function: persons-to-d3-hierarchy.js");
   console.log("Current directory:", process.cwd());
   console.log("Script directory:", __dirname);
 
   {
     // Convert from local json object
-    const hierarchy = convertToHierarchy(sampleData);
+    const hierarchy = personsToD3DagInput(sampleData);
     console.log("From sample data:", JSON.stringify(hierarchy, null, 2));
   }
 
@@ -50,7 +50,7 @@ async function main() {
     // Convert from a local file
     const file = resolve(__dirname, "../data/one-child.json");
     const data = await readJsonFile(file);
-    const hierarchy = convertToHierarchy(data);
+    const hierarchy = personsToD3DagInput(data);
     console.log(`From local file ${file}:`, JSON.stringify(hierarchy, null, 2));
   } catch (error) {
     console.error("Error processing file:", error);
@@ -60,7 +60,7 @@ async function main() {
     // Convert from another local file
     const file = resolve(__dirname, "../data/two-children-unrelated.json");
     const data = await readJsonFile(file);
-    const hierarchy = convertToHierarchy(data);
+    const hierarchy = personsToD3DagInput(data);
     console.log(`From local file ${file}:`, JSON.stringify(hierarchy, null, 2));
   } catch (error) {
     console.error("Error processing file:", error);
