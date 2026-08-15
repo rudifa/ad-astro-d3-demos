@@ -1,5 +1,3 @@
-/* eslint-env browser */
-
 import { LitElement, html, css } from "lit";
 import * as d3 from "d3";
 
